@@ -1,0 +1,278 @@
+/* ============================================
+   ESTACIÓN DEL FUTURO G500 — COMPONENTES PROPIOS
+   ============================================
+   Widgets que no existían en el sistema base:
+   plano de bombas, stepper de despacho, timeline
+   de escalamiento, selector de escenas LED y
+   diagrama de flujo de energía. Todo sobre los
+   tokens de css/colors.css, nada hardcoded.
+   ============================================ */
+
+/* ── Plano digital de bombas ── */
+.pump-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.pump {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--panel-fondo);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.pump:hover { transform: translateY(-2px); }
+.pump--selected { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px var(--cyan-tinte-sm); }
+
+.pump__num { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: var(--text-heading); }
+.pump__estado { font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.pump__estado::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.pump__meta { font-size: 0.68rem; color: var(--text-muted); }
+
+.pump--libre          { border-left: 3px solid var(--bomba-libre); }
+.pump--libre .pump__estado          { color: var(--bomba-libre); }
+.pump--ocupada         { border-left: 3px solid var(--bomba-ocupada); }
+.pump--ocupada .pump__estado        { color: var(--bomba-ocupada); }
+.pump--cargando        { border-left: 3px solid var(--bomba-cargando); }
+.pump--cargando .pump__estado       { color: var(--bomba-cargando); }
+.pump--pago            { border-left: 3px solid var(--bomba-pago); }
+.pump--pago .pump__estado           { color: var(--bomba-pago); }
+.pump--fuera           { border-left: 3px solid var(--bomba-fuera); }
+.pump--fuera .pump__estado          { color: var(--bomba-fuera); }
+.pump--mantenimiento   { border-left: 3px solid var(--bomba-mantenimiento); }
+.pump--mantenimiento .pump__estado  { color: var(--bomba-mantenimiento); }
+.pump--bloqueo         { border-left: 3px solid var(--bomba-bloqueo); }
+.pump--bloqueo .pump__estado        { color: var(--bomba-bloqueo); }
+
+.pump-leyenda { display: flex; flex-wrap: wrap; gap: var(--space-sm); font-size: 0.72rem; color: var(--text-body); }
+.pump-leyenda__item { display: flex; align-items: center; gap: 6px; }
+.pump-leyenda__dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* ── Stepper de 6 pasos (despachador) ── */
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper__paso {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-xs) 2px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.stepper__circulo {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  border: 2px solid var(--glass-border);
+  font-weight: 800;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+}
+.stepper__paso--activo .stepper__circulo { border-color: var(--accent-cyan); color: var(--accent-cyan); box-shadow: 0 0 0 4px var(--cyan-tinte-sm); }
+.stepper__paso--hecho .stepper__circulo { border-color: var(--status-success); background: var(--status-success); color: var(--text-on-accent); }
+.stepper__paso--activo, .stepper__paso--hecho { color: var(--text-heading); }
+.stepper__label { font-size: 0.68rem; font-weight: 600; text-align: center; }
+.stepper__linea { flex: 0 0 24px; height: 2px; background: var(--glass-border); margin-top: -22px; }
+
+/* ── Botones grandes tipo tablet ── */
+.btn-tablet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 96px;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.btn-tablet:hover { background: var(--glass-bg-hover); transform: translateY(-2px); }
+.btn-tablet--activo { border-color: var(--accent-cyan); background: var(--cyan-tinte-sm); }
+.btn-tablet i, .btn-tablet svg { width: 26px; height: 26px; color: var(--accent-cyan); }
+.btn-tablet--grande { min-height: 140px; font-size: 1.05rem; }
+.btn-tablet--grande i, .btn-tablet--grande svg { width: 34px; height: 34px; }
+
+/* ── Timeline de escalamiento (vertical, seguridad) ── */
+.escalada { display: flex; flex-direction: column; }
+.escalada__paso { display: flex; gap: var(--space-sm); position: relative; padding-bottom: var(--space-lg); }
+.escalada__paso:last-child { padding-bottom: 0; }
+.escalada__paso::before {
+  content: '';
+  position: absolute;
+  left: 13px; top: 28px; bottom: 0;
+  width: 2px;
+  background: var(--border-medium);
+}
+.escalada__paso:last-child::before { display: none; }
+.escalada__num {
+  flex: 0 0 auto;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--superficie);
+  border: 2px solid var(--glass-border);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: var(--text-heading);
+  z-index: 1;
+}
+.escalada__paso--activo .escalada__num { border-color: var(--sev-critica); color: var(--sev-critica); }
+.escalada__paso--hecho .escalada__num { border-color: var(--status-success); background: var(--status-success); color: var(--text-on-accent); }
+.escalada__cuerpo { flex: 1; padding-top: 2px; }
+.escalada__titulo { font-size: 0.85rem; font-weight: 700; color: var(--text-heading); }
+.escalada__detalle { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Selector de escenas LED ── */
+.led-selector { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.led-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--panel-fondo);
+  cursor: pointer;
+  font-size: 0.68rem;
+  color: var(--text-body);
+}
+.led-swatch--activo { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px var(--cyan-tinte-sm); color: var(--text-heading); }
+.led-swatch__muestra { width: 40px; height: 20px; border-radius: 4px; }
+
+/* ── Diagrama de flujo de energía ── */
+.flujo { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
+.flujo__nodo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-md);
+  min-width: 120px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--panel-fondo);
+  text-align: center;
+}
+.flujo__nodo i, .flujo__nodo svg { width: 22px; height: 22px; color: var(--accent-cyan); }
+.flujo__nodo strong { font-size: 0.82rem; color: var(--text-heading); }
+.flujo__nodo span { font-size: 0.7rem; color: var(--text-muted); }
+.flujo__flecha { flex: 0 0 auto; display: flex; align-items: center; color: var(--accent-cyan); position: relative; width: 36px; height: 2px; background: var(--glass-border); }
+.flujo__flecha::after { content: '▸'; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); }
+.flujo__flecha--activa { background: var(--accent-cyan); animation: pulse 1.4s ease infinite; }
+
+/* ── Badge de procedencia del valor (proyectado / observado / confirmado) ── */
+.valor-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-xs); font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.valor-badge--proyectado { background: var(--proc-estimacion-bg); color: var(--proc-estimacion); }
+.valor-badge--observado  { background: var(--proc-dato-bg); color: var(--proc-dato); }
+.valor-badge--confirmado { background: var(--proc-recomendacion-bg); color: var(--proc-recomendacion); }
+
+@media (max-width: 640px) {
+  .stepper { flex-wrap: wrap; }
+  .stepper__linea { display: none; }
+  .flujo { justify-content: center; }
+  .flujo__flecha { transform: rotate(90deg); }
+}
+
+/* ════════════════════════════════════════════
+   ACABADO TECH — sección Estación
+   (paneles HUD, bombas con glow por estado)
+   ════════════════════════════════════════════ */
+.glass-strong.tech-panel {
+  position: relative;
+  border-color: rgba(34, 211, 238, 0.16);
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.tech-panel::before, .tech-panel::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  border: 0 solid var(--accent-cyan);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.tech-panel::before { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 4px; }
+.tech-panel::after  { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 4px; }
+
+.tech-panel .text-h3 {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-body);
+}
+.tech-panel .text-h3::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 14px;
+  margin-right: 10px;
+  vertical-align: -2px;
+  border-radius: 2px;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.tech-panel table th { font-family: ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.08em; }
+.tech-panel table td { font-variant-numeric: tabular-nums; }
+.tech-panel tbody tr { transition: background var(--transition-fast); }
+.tech-panel tbody tr:hover { background: rgba(34, 211, 238, 0.05); }
+
+/* Bombas: glow según estado */
+.pump--libre         { --pc: var(--bomba-libre); }
+.pump--ocupada       { --pc: var(--bomba-ocupada); }
+.pump--cargando      { --pc: var(--bomba-cargando); }
+.pump--pago          { --pc: var(--bomba-pago); }
+.pump--fuera         { --pc: var(--bomba-fuera); }
+.pump--mantenimiento { --pc: var(--bomba-mantenimiento); }
+.pump--bloqueo       { --pc: var(--bomba-bloqueo); }
+
+.pump {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--pc, var(--accent-cyan)) 16%, transparent), transparent 65%),
+    var(--panel-fondo);
+}
+.pump::after {
+  content: '';
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 10px; height: 10px;
+  border-top: 2px solid var(--pc, var(--accent-cyan));
+  border-right: 2px solid var(--pc, var(--accent-cyan));
+  opacity: 0.6;
+}
+.pump:hover { box-shadow: 0 0 22px -6px var(--pc, var(--accent-cyan)); }
+.pump__num { font-family: ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.04em; }
+.pump__estado { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.64rem; }
+.pump__estado::before { box-shadow: 0 0 8px currentColor; }
+.pump--cargando .pump__estado::before { animation: pulse 1.2s ease infinite; }
+.pump--bloqueo { animation: pump-alerta 2s ease infinite; }
+@keyframes pump-alerta {
+  50% { box-shadow: 0 0 24px -4px var(--bomba-bloqueo); }
+}
+
+.stepper__paso--activo .stepper__circulo { box-shadow: 0 0 0 4px var(--cyan-tinte-sm), 0 0 18px var(--accent-cyan); }
+.stepper__circulo { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+.btn-tablet { position: relative; }
+.btn-tablet:hover { border-color: var(--accent-cyan); box-shadow: 0 0 22px -8px var(--accent-cyan); }

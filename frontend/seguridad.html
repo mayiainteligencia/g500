@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Consola de incidentes: alertas, matriz de eventos y escalamiento.">
+  <title>Seguridad — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="seguridad">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="shield-alert" style="color:var(--accent-cyan);"></i> Consola de Incidentes</h1>
+          <p>Monitoreo por cámara con IA · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+      </section>
+
+      <!-- KPIs -->
+      <section class="kpi-grid" id="kpi-grid"></section>
+
+      <section style="display:grid; grid-template-columns: 1fr 380px; gap:var(--space-md); align-items:start;">
+
+        <!-- Feed de alertas -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px;">
+            <i data-lucide="camera" style="color:var(--accent-cyan); width:18px; height:18px;"></i>
+            Feed de alertas
+          </h3>
+          <div id="feed-alertas" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <!-- Escalamiento -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px;">
+            <i data-lucide="phone-call" style="color:var(--sev-critica); width:18px; height:18px;"></i>
+            Timeline de escalamiento
+          </h3>
+          <div class="escalada" id="escalada"></div>
+        </div>
+      </section>
+
+      <!-- Asalto reportado -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg); align-self:flex-start; width:min(620px,100%); box-sizing:border-box;">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <i data-lucide="user-x" style="color:var(--sev-critica); width:18px; height:18px;"></i>
+          Asalto reportado
+          <span style="font-size:0.72rem; color:var(--sev-critica); margin-left:auto;">● CAM-02 · Tienda</span>
+        </h3>
+        <div style="position:relative; width:100%;">
+          <video src="assets/images/asalto.mp4" autoplay muted loop playsinline disablepictureinpicture
+                 style="width:100%; display:block; border-radius:var(--radius-md); background:#000; pointer-events:none;"></video>
+          <span style="position:absolute; bottom:10px; left:12px; font:600 0.7rem monospace; color:#fff; text-shadow:0 0 4px #000; display:flex; align-items:center; gap:6px;">
+            <i style="width:8px; height:8px; border-radius:50%; background:var(--sev-critica);"></i> REC · CAM-02
+          </span>
+        </div>
+      </section>
+
+      <!-- Matriz de 8 eventos -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Matriz de eventos detectables</h3>
+        <div id="matriz-eventos" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <!-- LED scenes -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Selector de escenas LED</h3>
+        <div class="led-selector" id="led-selector"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const EVENTOS = [
+    { icon: 'user-x',        label: 'Asalto' },
+    { icon: 'heart-crack',   label: 'Desmayo' },
+    { icon: 'car-front',     label: 'Accidente' },
+    { icon: 'flame',         label: 'Fuego' },
+    { icon: 'cigarette',     label: 'Cigarro encendido' },
+    { icon: 'package',       label: 'Objeto olvidado' },
+    { icon: 'fuel',          label: 'Mal uso de bomba' },
+    { icon: 'users',         label: 'Fila excesiva' },
+  ];
+
+  const ALERTAS = [
+    { camara: 'CAM-03 · Bomba 5', ubicacion: 'Isla de despacho', evento: 'Cigarro encendido', confianza: 0.88, hora: 'hace 2 min' },
+    { camara: 'CAM-07 · Acceso', ubicacion: 'Entrada norte', evento: 'Fila excesiva', confianza: 0.74, hora: 'hace 6 min' },
+    { camara: 'CAM-01 · Tienda', ubicacion: 'Caja principal', evento: 'Objeto olvidado', confianza: 0.61, hora: 'hace 11 min' },
+  ];
+
+  const ESCALADA = [
+    { titulo: 'Detección automática', detalle: 'Cigarro encendido detectado en isla de despacho.', estado: 'hecho' },
+    { titulo: 'Confirmación humana', detalle: 'Operador de seguridad revisa el clip de 8 segundos.', estado: 'hecho' },
+    { titulo: 'Aviso al gerente en turno', detalle: 'Notificación push + LED de advertencia en la isla.', estado: 'activo' },
+    { titulo: 'Aviso a seguridad física', detalle: 'Guardia de piso se dirige a la ubicación.', estado: 'pendiente' },
+    { titulo: 'Corte de bomba (si aplica)', detalle: 'Bloqueo remoto de la bomba afectada.', estado: 'pendiente' },
+    { titulo: 'Llamada al 911', detalle: 'Solo si el evento escala a riesgo real.', estado: 'pendiente' },
+  ];
+
+  const ESCENAS_LED = [
+    { color: 'var(--status-success)', label: 'Normal' },
+    { color: 'var(--sev-media)',      label: 'Atención' },
+    { color: 'var(--sev-critica)',    label: 'Emergencia' },
+    { color: 'var(--accent-cyan)',    label: 'Promoción' },
+  ];
+
+  const KPIS_SEG = [
+    { icon: 'timer',            label: 'Tiempo de detección',   value: '3.2 s',  sub: 'Promedio del turno' },
+    { icon: 'user-check',       label: 'Tiempo de confirmación', value: '41 s',  sub: 'Desde detección a confirmar' },
+    { icon: 'flag',             label: 'Falsos positivos',      value: '2',      sub: 'Por cámara, hoy' },
+    { icon: 'shield-check',     label: 'Incidentes resueltos',  value: '5 / 5',  sub: 'Sin escalar a 911' },
+  ];
+
+  function renderKpis() {
+    document.getElementById('kpi-grid').innerHTML = KPIS_SEG.map(k => `
+      <div class="kpi-card">
+        <div class="kpi-card__label"><span>${k.label}</span><i data-lucide="${k.icon}" class="icon-xs" style="color:var(--accent-cyan);"></i></div>
+        <div class="kpi-card__value">${k.value}</div>
+        <div class="kpi-card__sub">${k.sub}</div>
+      </div>`).join('');
+  }
+
+  function renderFeed() {
+    document.getElementById('feed-alertas').innerHTML = ALERTAS.map((a, i) => `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <strong style="font-size:0.85rem; color:var(--text-heading);">${a.evento}</strong>
+            <div style="font-size:0.72rem; color:var(--text-muted);">${a.camara} · ${a.ubicacion}</div>
+          </div>
+          <span style="font-size:0.68rem; color:var(--text-muted);">${a.hora}</span>
+        </div>
+        <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:6px; background:var(--glass-bg); border-radius:4px; overflow:hidden;">
+            <div style="width:${a.confianza*100}%; height:100%; background:var(--accent-cyan);"></div>
+          </div>
+          <span style="font-size:0.7rem; color:var(--text-muted);">${(a.confianza*100).toFixed(0)}% confianza</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="btn-glass" data-i="${i}" data-accion="confirmar" style="border:none; padding:6px 12px; font-size:0.75rem; cursor:pointer;">Confirmar</button>
+          <button class="btn-glass" data-i="${i}" data-accion="descartar" style="border:none; padding:6px 12px; font-size:0.75rem; cursor:pointer; opacity:0.7;">Descartar</button>
+        </div>
+      </div>`).join('');
+
+    document.querySelectorAll('[data-accion]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('div[style*="padding:12px"]');
+        card.style.opacity = '0.35';
+        card.style.pointerEvents = 'none';
+      });
+    });
+  }
+
+  function renderEscalada() {
+    document.getElementById('escalada').innerHTML = ESCALADA.map((p, i) => `
+      <div class="escalada__paso escalada__paso--${p.estado}">
+        <span class="escalada__num">${p.estado === 'hecho' ? '<i data-lucide=\"check\" style=\"width:12px;height:12px;\"></i>' : i + 1}</span>
+        <div class="escalada__cuerpo">
+          <div class="escalada__titulo">${p.titulo}</div>
+          <div class="escalada__detalle">${p.detalle}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderMatriz() {
+    document.getElementById('matriz-eventos').innerHTML = EVENTOS.map(e => `
+      <div style="display:flex; align-items:center; gap:8px; padding:10px; background:var(--panel-fondo); border-radius:var(--radius-sm); border:1px solid var(--glass-border);">
+        <i data-lucide="${e.icon}" style="color:var(--accent-cyan); width:16px; height:16px; flex-shrink:0;"></i>
+        <span style="font-size:0.78rem; color:var(--text-body);">${e.label}</span>
+      </div>`).join('');
+  }
+
+  function renderLed() {
+    document.getElementById('led-selector').innerHTML = ESCENAS_LED.map((s, i) => `
+      <button type="button" class="led-swatch ${i === 0 ? 'led-swatch--activo' : ''}" data-i="${i}">
+        <span class="led-swatch__muestra" style="background:${s.color};"></span>${s.label}
+      </button>`).join('');
+    document.querySelectorAll('.led-swatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.led-swatch').forEach(b => b.classList.remove('led-swatch--activo'));
+        btn.classList.add('led-swatch--activo');
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderKpis();
+    renderFeed();
+    renderEscalada();
+    renderMatriz();
+    renderLed();
+    G5.initSello('#sello-header');
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

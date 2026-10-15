@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#080c14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Copiloto — Cerebro Electoral</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ════════════════════════
+       TOPBAR
+  ═════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <div class="topbar__avatar-wrap">
+        <div class="topbar__avatar-ring"></div>
+        <img src="assets/avatar.jpg" alt="Candidato" class="topbar__avatar">
+      </div>
+      <div class="topbar__text">
+        <span class="topbar__name">Candidato</span>
+        <span class="topbar__sub">
+          <span class="dot-live"></span>
+          Campeche 2027 · En línea
+        </span>
+      </div>
+    </div>
+
+    <div class="topbar__actions">
+      <button class="icon-btn" id="theme-toggle-btn" aria-label="Cambiar tema" title="Cambiar modo">
+        <i data-lucide="sun" style="width:17px;height:17px;" id="theme-icon"></i>
+      </button>
+      <button class="icon-btn" id="notif-btn" aria-label="Alertas">
+        <i data-lucide="bell" style="width:18px;height:18px;"></i>
+        <span class="notif-badge">4</span>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════
+       NOTIF DRAWER (Alertas)
+  ═════════════════════════ -->
+  <div id="notif-drawer" class="notif-drawer">
+    <div class="notif-header">
+      <span class="notif-title">Alertas del día</span>
+      <span class="notif-clear" onclick="$('notif-drawer').classList.remove('notif-drawer--open')">Cerrar</span>
+    </div>
+    <div id="notif-list" class="notif-list">
+      <!-- Renderizado desde JS -->
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════
+       SCROLL PRINCIPAL
+  ═════════════════════════ -->
+  <div class="main-scroll">
+
+    <!-- Alertas flotantes dinámicas -->
+    <div id="floating-alerts" style="padding:10px 0 0; display:flex; flex-direction:column; gap:6px;"></div>
+
+    <!-- ══════ VISTA 1: MI DÍA ══════ -->
+    <section id="view-mia" class="view view--active">
+      <div class="sec-label">Historias & Noticias del Día</div>
+      <div id="stories-rail" class="stories-row"></div>
+      <div class="divider"></div>
+      <div class="sec-label" style="padding-top:8px;">Tu Feed Ejecutivo</div>
+      <div id="feed-list" style="display:flex;flex-direction:column;gap:10px;padding:0 0 8px;"></div>
+    </section>
+
+
+    <!-- ══════ VISTA 2: REDES ══════ -->
+    <section id="view-redes" class="view">
+      <div class="sec-label">Cómo te ven en redes sociales</div>
+
+      <!-- Post Viral -->
+      <div class="feed-post">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">RD</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">CE-Redes · Análisis Vivo</div>
+            <div class="post-agent-time">Actualizado hace 8 min</div>
+          </div>
+          <span class="proc-badge proc--inferencia">Inferencia</span>
+        </div>
+        <div class="post-visual" style="background:linear-gradient(135deg,#1a0533,#2d1b69);">
+          <div>
+            <div class="post-big-num" style="color:#a78bfa;">47K</div>
+            <div style="font-size:0.68rem;color:#74839a;margin-top:2px;">reproducciones</div>
+          </div>
+          <div class="post-visual-text">
+            <div class="post-visual-label">Video viral del mitin</div>
+            <div class="post-visual-headline">"Campeche no pide permiso para crecer"</div>
+          </div>
+        </div>
+        <div class="post-body">
+          <p class="post-agent-quote">Lo que dicen de ti en los comentarios:<br><br>
+          <b>"jajaja es auténtico, no lo entrenen por favor"</b> — 2,100 likes<br>
+          <b>"así da gusto ver a un político"</b> — 1,800 likes<br>
+          <b>"es el primero que viene aquí en 3 años"</b> — 1,400 likes<br><br>
+          <span class="highlight">Sentimiento general: 94% positivo.</span> Eso no se compra con pauta.</p>
+        </div>
+        <div class="pill-row" style="padding:0 16px 14px;">
+          <span class="pill pill--purple"><i data-lucide="flame" style="width:11px;height:11px;"></i> Trending</span>
+          <span class="pill pill--green">94% Positivo</span>
+          <span class="pill pill--cyan">TikTok + Reels</span>
+        </div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <!-- Menciones destacadas -->
+      <div class="feed-post">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#0f4c8a,#22d3ee);">MS</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">MonitorSol · Prensa</div>
+            <div class="post-agent-time">Radio + Portales digitales</div>
+          </div>
+          <span class="proc-badge proc--dato">Dato</span>
+        </div>
+        <div class="post-body" style="padding-top:14px;">
+          <p class="post-agent-quote">Menciones destacadas de hoy en medios:<br><br>
+          <b>Radio Campeche FM</b> — Segmento de 4 min sobre propuestas de infraestructura. Tono muy cálido.<br><br>
+          <b>Portal Campeche Noticias</b> — "El candidato que cambia la campaña". Artículo de opinión favorable.<br><br>
+          <b>Radio Delfín · Cd. del Carmen</b> — Transcripción MonitorSol: <i>"...el avance en encuestas refleja el respaldo tras el recorrido en colonias..."</i></p>
+        </div>
+        <div class="pill-row" style="padding:0 16px 14px;">
+          <span class="pill pill--cyan">Share of Voice: 48.5%</span>
+          <span class="pill pill--green">+18pp vs oposición</span>
+        </div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <!-- Comentario gracioso -->
+      <div class="feed-post" style="border-color:rgba(167,139,250,0.25);">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#7c3aed,#f472b6);">CE</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">CE-Copiloto · Social Listening</div>
+            <div class="post-agent-time">Comentarios destacados</div>
+          </div>
+          <span class="proc-badge proc--inferencia">Análisis</span>
+        </div>
+        <div class="post-body" style="padding-top:14px;">
+          <p class="post-agent-quote">Veo comentarios muy buenos en tu video de hoy. La gente te tiene cariño genuino. Aquí los mejores:<br><br>
+          <b>"Que no contraten a ningún community manager, este así está perfecto"</b><br><br>
+          <b>"Mi mamá preguntó que quién es el señor del video y ya quiere votar por ti"</b><br><br>
+          <b>"Es el primero que llega a Calkiní desde el sexenio pasado"</b><br><br>
+          <span class="highlight">Eso no lo hace la pauta. Lo hace la presencia real en territorio.</span></p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════ VISTA 3: TERRITORIO ══════ -->
+    <section id="view-territorio" class="view">
+      <div class="terr-header">
+        <div class="terr-title">Mapa Político</div>
+        <div class="terr-subtitle">13 municipios · Campeche</div>
+      </div>
+
+      <!-- Contadores resumen -->
+      <div class="state-counters">
+        <div class="state-counter">
+          <div class="state-counter__val" style="color:#34d399;" id="cnt-fav">—</div>
+          <div class="state-counter__lbl">Favorables</div>
+        </div>
+        <div class="state-counter">
+          <div class="state-counter__val" style="color:#f5c518;" id="cnt-comp">—</div>
+          <div class="state-counter__lbl">Competitivos</div>
+        </div>
+        <div class="state-counter">
+          <div class="state-counter__val" style="color:#ff4757;" id="cnt-riesgo">—</div>
+          <div class="state-counter__lbl">En Riesgo</div>
+        </div>
+      </div>
+
+      <div style="padding:0 16px 8px;font-size:0.72rem;color:#74839a;">
+        Toca cualquier municipio para que el agente te explique qué está pasando ahí
+      </div>
+
+      <div id="municipios-grid" class="municipio-grid">
+        <!-- Renderizado desde JS -->
+      </div>
+    </section>
+
+
+    <!-- ══════ VISTA 4: ENTREVISTAS ══════ -->
+    <section id="view-entrevistas" class="view">
+      <div class="sec-label">Análisis de tus entrevistas</div>
+
+      <!-- Entrevista Canal 11 -->
+      <div class="feed-post">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#0f4c8a,#22d3ee);">C11</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">Canal 11 Campeche</div>
+            <div class="post-agent-time">Esta mañana · Noticias 8:00</div>
+          </div>
+          <span class="proc-badge proc--inferencia">Análisis</span>
+        </div>
+        <div class="post-visual" style="background:linear-gradient(135deg,#00101a,#003d5c);">
+          <div>
+            <div class="post-big-num" style="color:#22d3ee;">9.2</div>
+            <div style="font-size:0.68rem;color:#74839a;margin-top:2px;">de 10</div>
+          </div>
+          <div class="post-visual-text">
+            <div class="post-visual-label">Calificación MonitorSol</div>
+            <div class="post-visual-headline">Tu mejor entrevista en lo que va de la campaña</div>
+          </div>
+        </div>
+        <div class="post-body">
+          <p class="post-agent-quote">Lo que funcionó:<br><br>
+          <span class="highlight">Cuando dijiste "las cifras no mienten y yo tampoco"</span> fue el momento de mayor impacto. Eso fue clip.<br><br>
+          El conductor intentó atacarte en pensiones públicas. Lo bloqueaste con calma. En redes eso se valora mucho — se veía como alguien que sabe lo que dice.<br><br>
+          <b>El clip de cierre ya tiene 12,000 reproducciones.</b></p>
+        </div>
+        <div class="pill-row" style="padding:0 16px 14px;">
+          <span class="pill pill--green">Seguro</span>
+          <span class="pill pill--cyan">Con cifras</span>
+          <span class="pill pill--purple">No te dejaste</span>
+        </div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <!-- Recomendación próxima entrevista -->
+      <div class="feed-post" style="border-color:rgba(244,114,182,0.2);">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#9d174d,#f472b6);">CP</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">CE-Copiloto · Preparación</div>
+            <div class="post-agent-time">Para tu próxima entrevista</div>
+          </div>
+          <span class="proc-badge proc--recomendacion">Recomendación</span>
+        </div>
+        <div class="post-body" style="padding-top:14px;">
+          <p class="post-agent-quote">Si te preguntan sobre Champotón, la respuesta que más funciona es:<br><br>
+          <b>"Ya estamos en territorio. El plan hídrico para las comunidades rurales tiene fecha: primer trimestre del año entrante."</b><br><br>
+          No dejes que el tema del agua se quede en crítica — conviértelo en tu fortaleza. La gente que está escéptica ahí quiere escuchar una fecha, no una promesa.<br><br>
+          <span class="warn">Esta sugerencia es de CE-Copiloto. Valídala con tu equipo antes.</span></p>
+        </div>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <!-- Próxima aparición -->
+      <div class="feed-post">
+        <div class="post-header">
+          <div class="post-agent-avatar" style="background:linear-gradient(135deg,#1d4ed8,#5b9dff);">AGD</div>
+          <div class="post-agent-info">
+            <div class="post-agent-name">Agenda de Medios</div>
+            <div class="post-agent-time">Próximas apariciones</div>
+          </div>
+          <span class="proc-badge proc--dato">Dato</span>
+        </div>
+        <div class="post-body" style="padding-top:14px;">
+          <p class="post-agent-quote">
+          <b>Mañana 09:30 — Radio Fórmula Campeche:</b> Entrevista de 20 min. Tema probable: propuestas económicas.<br><br>
+          <b>Viernes 18:00 — Debate en CECUT:</b> Moderado por Noticieros Campeche. Los 3 candidatos punteros.<br><br>
+          <span class="highlight">El debate es tu mayor oportunidad de la semana.</span> Ya estamos preparando el briefing.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════ VISTA 5: AGENTE CE ══════ -->
+    <section id="view-agente" class="view" style="padding:0; height:calc(100vh - 68px - 70px);">
+    </section>
+
+  </div><!-- /main-scroll -->
+
+
+  <!-- ════════════════════════
+       TAB BAR
+  ═════════════════════════ -->
+  <nav class="tabbar">
+    <div class="tab tab--active" data-tab="mia">
+      <i data-lucide="home" style="width:20px;height:20px;"></i>
+      <span>Mi Día</span>
+      <div class="tab-indicator"></div>
+    </div>
+    <div class="tab" data-tab="redes">
+      <i data-lucide="heart" style="width:20px;height:20px;"></i>
+      <span>Redes</span>
+      <div class="tab-indicator"></div>
+    </div>
+    <div class="tab" data-tab="territorio">
+      <i data-lucide="map-pin" style="width:20px;height:20px;"></i>
+      <span>Territorio</span>
+      <div class="tab-indicator"></div>
+    </div>
+    <div class="tab" data-tab="entrevistas">
+      <i data-lucide="mic" style="width:20px;height:20px;"></i>
+      <span>Entrevistas</span>
+      <div class="tab-indicator"></div>
+    </div>
+    <div class="tab" data-tab="agente">
+      <i data-lucide="bot" style="width:20px;height:20px;"></i>
+      <span>CE-Bot</span>
+      <div class="tab-indicator"></div>
+    </div>
+  </nav>
+
+</div><!-- /app-shell -->
+
+
+<!-- ════════════════════════
+     STORY FULLSCREEN OVERLAY
+═════════════════════════ -->
+<div id="story-overlay" class="story-overlay">
+  <div id="story-bg" class="story-bg"></div>
+  <div class="story-content">
+    <div>
+      <div class="story-progress-bar">
+        <div id="story-progress-fill" class="story-progress-fill"></div>
+      </div>
+      <div class="story-header-row" style="margin-top:12px;">
+        <div class="story-source">
+          <div class="story-source-icon">
+            <i data-lucide="cpu" style="width:16px;height:16px;color:#22d3ee;"></i>
+          </div>
+          <span id="story-source-text">CE-Copiloto</span>
+        </div>
+        <div class="story-close" onclick="closeStory()">
+          <i data-lucide="x" style="width:22px;height:22px;"></i>
+        </div>
+      </div>
+    </div>
+    <div class="story-body">
+      <span id="story-sentiment" class="story-sentiment-pill story-sentiment-pill--pos">Positivo</span>
+      <h2 id="story-title" class="story-title">Titular</h2>
+      <p id="story-body-text" class="story-body-text">Cuerpo del story</p>
+      <div id="story-meta" class="story-meta"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════
+     CHAT AGENTE CE — Injected inline for height control
+═════════════════════════ -->
+<script>
+// El chat se inyecta directamente en la sección agente para controlar el height correctamente
+window.addEventListener('DOMContentLoaded', () => {
+  const sec = document.getElementById('view-agente');
+  if (!sec) return;
+  sec.innerHTML = `
+    <div class="chat-container">
+      <div id="chat-messages" class="chat-messages"></div>
+      <div id="quick-replies" class="quick-replies"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" class="chat-input" type="text" placeholder="Pregúntame algo..." autocomplete="off">
+        <div id="chat-send" class="chat-send-btn">
+          <i data-lucide="send" style="width:16px;height:16px;color:#fff;"></i>
+        </div>
+      </div>
+    </div>
+  `;
+});
+</script>
+
+<script src="js/mobile.js"></script>
+</body>
+</html>

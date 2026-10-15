@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Mantenimiento: salud de dispensarios, órdenes de trabajo y cola de prioridad.">
+  <title>Mantenimiento — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="mantenimiento">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="wrench" style="color:var(--accent-cyan);"></i> Mantenimiento</h1>
+          <p>Salud de dispensarios y conciliación · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+      </section>
+
+      <!-- Salud de dispensarios -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Salud de dispensarios y pronóstico de falla</h3>
+        <div id="salud-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <section style="display:grid; grid-template-columns: 1fr 340px; gap:var(--space-md); align-items:start;">
+
+        <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+          <!-- Órdenes de trabajo -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Órdenes de trabajo</h3>
+            <div id="ordenes" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+
+          <!-- Conciliación con estados -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Conciliación</h3>
+            <div id="conciliacion-mant" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+
+          <!-- Bitácora y vencimientos -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Bitácora y vencimientos</h3>
+            <div id="bitacora" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+          <!-- Inventario y próxima entrega -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-md); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Inventario y próxima entrega</h3>
+            <div id="inventario" style="display:flex; flex-direction:column; gap:8px;"></div>
+          </div>
+
+          <!-- Conectividad de equipos -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-md); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Conectividad de equipos</h3>
+            <div id="conectividad" style="display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+
+          <!-- Cola de prioridad -->
+          <div class="glass-strong tech-panel" style="padding:var(--space-md); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:4px;">Cola de prioridad</h3>
+            <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:8px;">
+              prioridad = severidad × 3 + impacto en ventas × 2 + antigüedad
+            </p>
+            <div id="cola-prioridad" style="display:flex; flex-direction:column; gap:6px;"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const SALUD = [
+    { bomba: 'Bomba 1', salud: 92, pronostico: 'Sin falla prevista en 30 días' },
+    { bomba: 'Bomba 2', salud: 85, pronostico: 'Sin falla prevista en 30 días' },
+    { bomba: 'Bomba 3', salud: 38, pronostico: 'Falla probable en 5 días — válvula' },
+    { bomba: 'Bomba 4', salud: 97, pronostico: 'Sin falla prevista' },
+    { bomba: 'Bomba 5', salud: 61, pronostico: 'Revisar sensor de flujo en 15 días' },
+    { bomba: 'Bomba 6', salud: 74, pronostico: 'Sin falla prevista en 30 días' },
+  ];
+
+  const ORDENES = [
+    { id: 'WO-118', equipo: 'Bomba 3', descripcion: 'Cambio de válvula de retención', estado: 'en curso' },
+    { id: 'WO-119', equipo: 'Bomba 5', descripcion: 'Calibración de sensor de flujo', estado: 'pendiente' },
+    { id: 'WO-115', equipo: 'Compresor de aire', descripcion: 'Mantenimiento preventivo trimestral', estado: 'completada' },
+  ];
+  const ESTADO_OT = { pendiente: 'badge--neutral', 'en curso': 'badge--warn', completada: 'badge--success' };
+
+  const CONCILIACION_MANT = [
+    { texto: 'Diferencia de 20 L en Diésel — turno matutino', estado: 'investigada' },
+    { texto: 'Cierre de caja Bomba 5 con $40 de diferencia', estado: 'explicada' },
+    { texto: 'Entrega de Premium del 24/09 — folio 88213', estado: 'confirmada' },
+  ];
+  const ESTADO_CONC2 = {
+    pendiente:  { clase: 'badge--neutral', texto: 'Pendiente' },
+    investigada:{ clase: 'badge--warn',    texto: 'Investigada' },
+    explicada:  { clase: 'badge--info',    texto: 'Explicada' },
+    confirmada: { clase: 'badge--success', texto: 'Confirmada' },
+  };
+
+  const BITACORA = [
+    { texto: 'Mantenimiento preventivo de tanque subterráneo', vence: '12 días' },
+    { texto: 'Verificación de básculas de despacho', vence: '28 días' },
+    { texto: 'Certificación de extintores', vence: 'vencido hace 3 días' },
+  ];
+
+  const INVENTARIO = [
+    { insumo: 'Filtros de bomba', cantidad: 4, proxima: 'Entrega en 6 días' },
+    { insumo: 'Aceite hidráulico', cantidad: 12, proxima: 'Entrega en 2 días' },
+    { insumo: 'Sensores de flujo', cantidad: 1, proxima: 'Entrega en 14 días' },
+  ];
+
+  const CONECTIVIDAD = [
+    { equipo: 'Bomba 1–8', estado: 'En línea' },
+    { equipo: 'Básculas de tienda', estado: 'En línea' },
+    { equipo: 'Sensor de tanque #2', estado: 'Intermitente' },
+    { equipo: 'Cámaras de seguridad', estado: 'En línea' },
+  ];
+
+  const COLA = [
+    { titulo: 'Bomba 3 — válvula de retención', score: 9.4 },
+    { titulo: 'Certificación de extintores vencida', score: 8.1 },
+    { titulo: 'Sensor de tanque #2 intermitente', score: 6.2 },
+    { titulo: 'Bomba 5 — calibración de flujo', score: 5.0 },
+  ];
+
+  function colorSalud(v) { return v >= 80 ? 'var(--status-success)' : v >= 55 ? 'var(--sev-media)' : 'var(--sev-critica)'; }
+
+  function renderSalud() {
+    document.getElementById('salud-grid').innerHTML = SALUD.map(s => `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <strong style="font-size:0.85rem; color:var(--text-heading);">${s.bomba}</strong>
+          <span style="font-size:0.85rem; font-weight:800; color:${colorSalud(s.salud)};">${s.salud}%</span>
+        </div>
+        <div style="height:6px; background:var(--glass-bg); border-radius:4px; overflow:hidden; margin-bottom:6px;">
+          <div style="width:${s.salud}%; height:100%; background:${colorSalud(s.salud)};"></div>
+        </div>
+        <p style="font-size:0.72rem; color:var(--text-muted);">${s.pronostico}</p>
+      </div>`).join('');
+  }
+
+  function renderOrdenes() {
+    document.getElementById('ordenes').innerHTML = ORDENES.map(o => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--panel-fondo); border-radius:var(--radius-sm);">
+        <div>
+          <strong style="font-size:0.8rem; color:var(--text-heading);">${o.id} · ${o.equipo}</strong>
+          <div style="font-size:0.74rem; color:var(--text-muted);">${o.descripcion}</div>
+        </div>
+        <span class="badge ${ESTADO_OT[o.estado]}" style="font-size:0.68rem;">${o.estado}</span>
+      </div>`).join('');
+  }
+
+  function renderConciliacion() {
+    document.getElementById('conciliacion-mant').innerHTML = CONCILIACION_MANT.map(c => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--panel-fondo); border-radius:var(--radius-sm);">
+        <span style="font-size:0.8rem; color:var(--text-body);">${c.texto}</span>
+        <span class="badge ${ESTADO_CONC2[c.estado].clase}" style="font-size:0.68rem;">${ESTADO_CONC2[c.estado].texto}</span>
+      </div>`).join('');
+  }
+
+  function renderBitacora() {
+    document.getElementById('bitacora').innerHTML = BITACORA.map(b => `
+      <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--panel-fondo); border-radius:var(--radius-sm);">
+        <span style="font-size:0.78rem; color:var(--text-body);">${b.texto}</span>
+        <span style="font-size:0.72rem; color:${b.vence.includes('vencido') ? 'var(--sev-critica)' : 'var(--text-muted)'};">${b.vence}</span>
+      </div>`).join('');
+  }
+
+  function renderInventario() {
+    document.getElementById('inventario').innerHTML = INVENTARIO.map(i => `
+      <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--panel-fondo); border-radius:var(--radius-sm);">
+        <span style="font-size:0.78rem; color:var(--text-body);">${i.insumo} <span style="color:var(--text-muted);">(${i.cantidad})</span></span>
+        <span style="font-size:0.7rem; color:var(--text-muted);">${i.proxima}</span>
+      </div>`).join('');
+  }
+
+  function renderConectividad() {
+    document.getElementById('conectividad').innerHTML = CONECTIVIDAD.map(c => `
+      <div style="display:flex; align-items:center; gap:8px; font-size:0.78rem;">
+        <span class="status-dot ${c.estado === 'En línea' ? 'status-dot--active' : 'status-dot--thinking'}"></span>
+        <span style="color:var(--text-body);">${c.equipo}</span>
+        <span style="margin-left:auto; color:var(--text-muted); font-size:0.7rem;">${c.estado}</span>
+      </div>`).join('');
+  }
+
+  function renderCola() {
+    const ordenada = [...COLA].sort((a, b) => b.score - a.score);
+    document.getElementById('cola-prioridad').innerHTML = ordenada.map((c, i) => `
+      <div style="display:flex; justify-content:space-between; padding:8px 10px; background:var(--panel-fondo-tenue); border-radius:var(--radius-sm);">
+        <span style="font-size:0.76rem; color:var(--text-body);">${i + 1}. ${c.titulo}</span>
+        <span style="font-size:0.76rem; font-weight:700; color:var(--accent-cyan);">${c.score.toFixed(1)}</span>
+      </div>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSalud();
+    renderOrdenes();
+    renderConciliacion();
+    renderBitacora();
+    renderInventario();
+    renderConectividad();
+    renderCola();
+    G5.initSello('#sello-header');
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

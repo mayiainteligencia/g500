@@ -1,0 +1,1194 @@
+/* ============================================
+   DCMarketAg — LAYOUT
+   ============================================
+   Escenario principal, sidebar, barra flotante
+   y breakpoints.
+
+   El home es un lienzo: la imagen ocupa todo y
+   las tarjetas flotan encima. Las páginas
+   internas (dashboard, agente, perfil…) pisan
+   .main con su propio display en su CSS.
+   ============================================ */
+
+.main {
+  position: relative;
+  min-height: 100vh;
+  margin-left: calc(var(--sidebar-width) + var(--space-lg));
+  padding: var(--space-lg) var(--space-xl) var(--space-xl) var(--space-md);
+  padding-top: calc(var(--filter-bar-height) + var(--space-xl));
+  overflow: hidden;
+}
+
+
+/* ════════════════════════════════════════════
+   ESCENARIO DEL HOME
+   ════════════════════════════════════════════
+   La imagen llena el bloque; el título y las
+   tarjetas se posicionan sobre ella.
+   ════════════════════════════════════════════ */
+
+/* Ancho de la tarjeta y radio del mordisco: los usan
+   tanto la tarjeta como el logo que encaja en él. */
+.main--home {
+  --svc-card-w: min(380px, 42vw);
+  --svc-notch: 56px;      /* radio del mordisco */
+  --svc-notch-up: 18px;   /* qué tan arriba del borde inferior */
+  --dc-logo-r: 42px;      /* radio real del logo, borde incluido */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: var(--filter-bar-height) var(--space-lg) var(--space-lg);
+}
+
+/* ── Imagen de fondo: cubre el viewport entero ── */
+
+.bg-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* Fotograma de respaldo: se ve si el video no carga
+     o si el sistema pide menos movimiento. */
+  background: var(--bg-mid) url('../assets/images/gas-station-poster.jpg') center / cover no-repeat;
+}
+
+.bg-stage__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El video ya viene montado ida y vuelta, así que el
+   loop nativo basta: no hace falta invertirlo por JS. */
+@media (prefers-reduced-motion: reduce) {
+  .bg-stage__video { display: none; }
+}
+
+/* Velo para que el texto siempre tenga contraste, sin caja: un degradado
+   de borde a borde, no un rectángulo detrás de cada bloque. Más oscuro donde
+   vive el texto (arriba y a la izquierda) y transparente donde el video debe
+   verse tal cual (la estación, a la derecha). */
+.bg-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(4, 7, 14, 0.6) 0%, rgba(4, 7, 14, 0.12) 34%, rgba(4, 7, 14, 0.2) 65%, rgba(4, 7, 14, 0.68) 100%),
+    linear-gradient(100deg, rgba(4, 7, 14, 0.78) 0%, rgba(4, 7, 14, 0.5) 32%, rgba(4, 7, 14, 0.12) 58%, transparent 75%);
+}
+
+/* Todo lo demás va por encima de la imagen */
+body[data-page="inicio"] .main,
+body[data-page="inicio"] .sidebar,
+body[data-page="inicio"] .filter-bar {
+  position: relative;
+  z-index: var(--z-cards);
+}
+
+body[data-page="inicio"] .sidebar { position: fixed; z-index: var(--z-sidebar); }
+body[data-page="inicio"] .filter-bar { position: fixed; z-index: var(--z-filter-bar); }
+
+.hero {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.hero__content {
+  flex: 1;
+  padding: var(--space-2xl) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.hero__content .text-hero {
+  text-align: center;
+  max-width: 18ch;
+}
+
+/* ── Legibilidad del hero ──
+   El fondo es un video de la estación: señalización de neón, cielo claro,
+   autos blancos, pavimento oscuro, todo en el mismo cuadro. Nada de caja
+   detrás del texto —se ve como un parche pegado sobre el video—, así que
+   el contraste lo dan dos cosas a la vez: el velo de .bg-stage::after, que
+   oscurece la zona donde vive el texto sin dibujar un rectángulo, y una
+   sombra de texto en capas (una oscura y ceñida para el borde de la letra,
+   otra ancha y suave para el halo) que aguanta incluso si el velo no basta
+   en un fotograma puntual. */
+.hero__titulo {
+  max-width: 16ch;
+  font-weight: 800;
+  color: var(--text-hero);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 2px 10px rgba(0, 0, 0, 0.7),
+    0 8px 36px rgba(0, 0, 0, 0.55);
+}
+
+.hero__description {
+  margin-top: var(--space-lg);
+  align-self: flex-start;
+  max-width: 34ch;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-body);
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+
+/* ── Tarjetas flotantes sobre la imagen ──
+   El selector lleva .main--home a propósito: así gana
+   sobre .gated (auth.css), que pone position:relative
+   y sacaría la tarjeta de su sitio al bloquearla. */
+
+.main--home .stats-card,
+.main--home .service-card {
+  position: absolute;
+  bottom: var(--space-xl);
+  z-index: var(--z-cards);
+  padding: var(--space-lg);
+  /* Radio grande: las tarjetas repiten las formas
+     redondeadas de la arquitectura de la imagen. */
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.main--home .stats-card {
+  left: var(--space-xl);
+  bottom: var(--space-2xl);
+  width: min(340px, 40vw);
+}
+
+.main--home .service-card {
+  right: var(--space-xl);
+  width: var(--svc-card-w);
+  bottom: var(--space-2xl);
+  gap: var(--space-md);
+
+  /* Forma orgánica: en vez de un rectángulo, la tarjeta
+     se muerde en la esquina inferior izquierda para dejar
+     pasar el logo. El radio asimétrico rompe la simetría. */
+  border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) 56px;
+  /* color-ok: en un mask-image el negro es el canal alfa "opaco",
+     no un color de la paleta. No tiene token ni debe tenerlo. */
+  -webkit-mask-image: radial-gradient(circle var(--svc-notch)
+    at 0 calc(100% - var(--svc-notch-up)), transparent 99.5%, #000 100%);
+  /* color-ok: canal alfa del mask, no color de paleta. */
+  mask-image: radial-gradient(circle var(--svc-notch)
+    at 0 calc(100% - var(--svc-notch-up)), transparent 99.5%, #000 100%);
+}
+
+/* El logo se acomoda dentro del mordisco */
+body[data-page="inicio"] .dc-logo {
+  left: auto;
+  /* Concéntrico con el mordisco */
+  right: calc(var(--space-xl) + var(--svc-card-w) - var(--dc-logo-r));
+  bottom: calc(var(--space-2xl) + var(--svc-notch-up) - var(--dc-logo-r));
+  transform: none;
+}
+
+body[data-page="inicio"] .dc-logo:hover {
+  transform: scale(1.06);
+}
+
+
+
+/* ════════════════════════════════════════════
+   LAS CINCO ETAPAS
+   ════════════════════════════════════════════
+   Índice de la plataforma, dentro del hero. En
+   pantalla sólo viven cinco fichas; el detalle
+   se abre al pedirlo y se cierra al terminar,
+   así el home nunca se satura.
+   ════════════════════════════════════════════ */
+
+/* Caja de referencia del detalle: se abre pegado a las fichas, no al hero. */
+.etapas-caja {
+  position: relative;
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.etapas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  /* El hero apaga los eventos para no tapar el mapa de fondo; las fichas
+     sí tienen que responder. */
+  pointer-events: auto;
+}
+
+.etapa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 66px;
+  height: 66px;
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  background: var(--panel-fondo-alto);
+  backdrop-filter: blur(18px);
+  color: var(--text-body);
+  font-family: var(--font-heading);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.etapa:hover {
+  border-color: var(--accent-cyan);
+  color: var(--text-heading);
+  transform: translateY(-2px);
+}
+
+.etapa--activa {
+  border-color: var(--accent-cyan);
+  color: var(--text-heading);
+  box-shadow: 0 0 0 3px var(--velo-08);
+}
+
+.etapa__num {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--accent-cyan);
+}
+
+.etapa__icono { display: grid; place-items: center; }
+.etapa__icono i { width: 16px; height: 16px; }
+
+.etapa__corto {
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+
+/* ── Detalle de la etapa ──
+   Absoluto y centrado: se abre encima del hero en vez de empujar el
+   contador y las tarjetas hacia abajo. */
+
+.etapa-detalle {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + var(--space-sm));
+  transform: translateX(-50%);
+  z-index: var(--z-cards);
+  width: min(440px, calc(100vw - var(--space-2xl)));
+  padding: var(--space-md);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background: var(--panel-fondo-alto);
+  backdrop-filter: blur(24px);
+  text-align: left;
+  pointer-events: auto;
+  animation: etapa-abrir 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes etapa-abrir {
+  from { opacity: 0; transform: translate(-50%, -6px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.etapa-detalle__cerrar {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.etapa-detalle__cerrar:hover {
+  color: var(--text-heading);
+  border-color: var(--accent-cyan);
+}
+
+.etapa-detalle__cerrar i { width: 13px; height: 13px; }
+
+.etapa-detalle__titulo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  padding-right: var(--space-lg);
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.etapa-detalle__num {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--accent-cyan);
+}
+
+.etapa-detalle__resumen {
+  margin-top: 4px;
+  color: var(--text-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.etapa-detalle__enlaces {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.etapa-detalle__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  color: var(--text-body);
+  font-size: 0.66rem;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.etapa-detalle__pill:hover {
+  border-color: var(--accent-cyan);
+  color: var(--text-heading);
+}
+
+.etapa-detalle__pill i { width: 12px; height: 12px; }
+
+.etapa-detalle__pie {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--velo-08);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.etapa-detalle__insumo {
+  flex: 1;
+  min-width: 16ch;
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .etapa:hover { transform: none; }
+  .etapa-detalle { animation: none; }
+}
+
+
+/* ════════════════════════════════════════════
+   STATS CARD
+   ════════════════════════════════════════════ */
+
+.stats-card__desc {
+  max-width: 320px;
+}
+
+.stats-card__bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.stats-card__metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  margin-right: auto;
+}
+
+.stats-card__avatars {
+  display: flex;
+}
+
+.stats-card__avatars .avatar {
+  margin-left: -10px;
+  border: 2px solid var(--bg-mid);
+}
+
+.stats-card__avatars .avatar:first-child {
+  margin-left: 0;
+}
+
+
+/* ════════════════════════════════════════════
+   SERVICE CARD
+   ════════════════════════════════════════════ */
+
+.service-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.service-card__location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-2xs);
+}
+
+.service-card__specs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm) var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-light);
+}
+
+.service-card__actions {
+  display: flex;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-light);
+}
+
+
+/* ════════════════════════════════════════════
+   SIDEBAR
+   ════════════════════════════════════════════ */
+
+.sidebar {
+  position: fixed;
+  left: var(--space-lg);
+  top: calc(var(--filter-bar-height) + var(--space-xl));
+  bottom: var(--space-xl);
+  width: var(--sidebar-width);
+  z-index: var(--z-sidebar);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-sm);
+  padding: 0;
+  /* Sin riel: cada icono es un círculo independiente */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  animation: fadeInLeft 0.6s ease forwards;
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    overflow-y: auto;
+    overflow-x: visible;
+    scrollbar-width: none; /* Firefox */
+    padding-bottom: var(--space-md);
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+}
+
+.sidebar__avatar {
+  margin-bottom: var(--space-sm);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  align-items: center;
+}
+
+
+/* ════════════════════════════════════════════
+   BARRA FLOTANTE SUPERIOR
+   ════════════════════════════════════════════ */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px;
+  border-radius: var(--radius-full);
+  background: var(--superficie);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  position: fixed;
+  top: var(--space-md);
+  left: calc(var(--sidebar-width) + var(--space-xl));
+  right: var(--space-lg);
+  z-index: var(--z-filter-bar);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+
+/* ════════════════════════════════════════════
+   HEADER TIPO NOTCH
+   ════════════════════════════════════════════
+   Tres piezas sueltas: pill izquierda, notch
+   colgando del borde superior, pill derecha.
+   ════════════════════════════════════════════ */
+
+.filter-bar--notch {
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0 var(--space-lg);
+  gap: var(--space-md);
+  justify-content: space-between;
+  align-items: flex-start;
+  /* El contenedor no se ve: solo posiciona */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+
+.filter-bar--notch > * {
+  pointer-events: auto;
+}
+
+/* Piezas laterales, independientes del notch */
+.topbar-side,
+.filter-bar--notch #auth-slot > *,
+.filter-bar--notch #rol-slot > * {
+  margin-top: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 8px 8px;
+  border-radius: var(--radius-full);
+  background: var(--superficie);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px -10px var(--sombra-negra);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  white-space: nowrap;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.topbar-side:hover,
+.filter-bar--notch #auth-slot > *:hover {
+  transform: scale(1.04);
+  box-shadow: 0 14px 36px -10px var(--sombra-negra-alta);
+}
+
+.topbar-side__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--accent-blue-light);
+  color: var(--accent-navy);
+}
+
+.topbar-side__icon svg { width: 15px; height: 15px; }
+
+/* El notch cuelga del borde: arriba recto, abajo muy redondo.
+   Va absoluto para quedar centrado en el viewport sin que lo
+   desplacen los anchos distintos de las piezas laterales. */
+.topbar-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 10px 12px 14px;
+  min-width: min(560px, 46vw);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: var(--superficie);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  box-shadow: 0 14px 40px -14px var(--sombra-negra-alta);
+  /* Animación propia: fadeInUp pisaría el translateX
+     del centrado y el notch se iría a la derecha. */
+  animation: notchDrop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes notchDrop {
+  from { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+
+/* ════════════════════════════════════════════
+   LOGO Y BURBUJA DEL AGENTE
+   ════════════════════════════════════════════ */
+
+.dc-logo {
+  position: fixed;
+  bottom: var(--space-2xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-cards);
+}
+
+.agent-bubble {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  z-index: var(--z-agent);
+}
+
+body[data-page="inicio"] .agent-bubble {
+  bottom: auto;
+  top: calc(var(--filter-bar-height) + var(--space-2xl));
+  right: var(--space-2xl);
+}
+
+
+/* ════════════════════════════════════════════
+   BLOBS (decorativos)
+   ════════════════════════════════════════════ */
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: var(--z-blobs);
+}
+
+.blob--primary {
+  width: 350px;
+  height: 350px;
+  background: var(--blob-primary);
+  top: -50px;
+  right: 10%;
+}
+
+.blob--secondary {
+  width: 250px;
+  height: 250px;
+  background: var(--blob-secondary);
+  bottom: 20%;
+  left: 5%;
+}
+
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — Tablet (≤ 1024px)
+   ════════════════════════════════════════════
+   Las tarjetas dejan de flotar y bajan a flujo
+   normal: encima de la imagen no caben.
+   ════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 0;
+    padding: var(--space-md);
+    padding-bottom: calc(var(--sidebar-width-mobile) + var(--space-2xl));
+  }
+
+  .main--home {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    padding-bottom: calc(var(--sidebar-width-mobile) + var(--space-2xl));
+  }
+
+  .hero {
+    flex: none;
+    min-height: 420px;
+    border-radius: var(--radius-lg);
+  }
+
+  body[data-page="inicio"] .agent-bubble {
+    bottom: var(--space-xl);
+    top: auto;
+    right: var(--space-xl);
+  }
+
+  .hero__content {
+    position: relative;
+    padding: var(--space-2xl) var(--space-lg);
+    min-height: 420px;
+    justify-content: center;
+  }
+
+  .main--home .stats-card,
+  .main--home .service-card {
+    position: relative;
+    inset: auto;
+    width: auto;
+  }
+
+  .main--home .service-card {
+    border-radius: var(--radius-xl);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .sidebar {
+    top: auto;
+    bottom: var(--space-sm);
+    left: var(--space-sm);
+    right: var(--space-sm);
+    width: auto;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 0;
+  }
+
+  .sidebar__avatar { margin-bottom: 0; }
+
+  .sidebar__nav {
+    flex-direction: row;
+    gap: var(--space-sm);
+    width: auto;
+  }
+
+  .sidebar__logout { margin-top: 0; }
+
+  .filter-bar {
+    position: static;
+    margin: 0 0 var(--space-md) 0;
+    flex-wrap: wrap;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Sin borde superior del que colgar, el notch
+     pasa a ser una tarjeta más de la columna. */
+  .filter-bar--notch {
+    padding: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-xs);
+  }
+
+
+  .topbar-notch {
+    position: static;
+    transform: none;
+    animation: fadeInUp 0.5s ease both;
+    min-width: 0;
+    width: 100%;
+    padding: 8px;
+    /* Apilado no cuelga de ningún borde: radio normal */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .topbar-side,
+  .filter-bar--notch #auth-slot > * {
+    margin-top: 0;
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-bar--notch #auth-slot { width: 100%; }
+
+  body[data-page="inicio"] .filter-bar { position: static; }
+
+
+
+
+  /* components.css define .dc-logo{display:flex} y se carga
+     después: hace falta más especificidad para ocultarlo. */
+  body .dc-logo {
+    display: none;
+  }
+
+  .blob--primary { width: 220px; height: 220px; }
+  .blob--secondary { width: 160px; height: 160px; }
+}
+
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — Mobile (≤ 768px)
+   ════════════════════════════════════════════
+   La sidebar se convierte en barra inferior.
+   ════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .main,
+  .main--home {
+    padding: var(--space-sm);
+    padding-bottom: calc(var(--sidebar-width-mobile) + var(--space-2xl));
+  }
+
+  /* La barra se apila y deja de ser fija: apilada mide
+     tres renglones y taparía el hero. */
+  .filter-bar {
+    margin: 0 var(--space-sm) var(--space-sm);
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs);
+  }
+
+  .filter-bar > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .filter-bar .brief-input {
+    flex: 1 1 100%;
+    order: 2;
+  }
+
+  .filter-bar .filter-pill--cta {
+    flex: 1 1 auto;
+    justify-content: center;
+    margin-left: 0;
+    order: 3;
+  }
+
+  .filter-bar #auth-slot {
+    flex: 1 1 auto;
+    order: 4;
+  }
+
+  .filter-bar #auth-slot > * { width: 100%; justify-content: center; }
+
+  .sidebar { gap: var(--space-xs); }
+  .sidebar__nav { gap: var(--space-xs); }
+
+  .hero {
+    min-height: 340px;
+    border-radius: var(--radius-md);
+  }
+
+  .hero__content {
+    min-height: 340px;
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .hero__description {
+    align-self: center;
+    text-align: center;
+  }
+
+  .service-card__specs {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-bubble {
+    bottom: calc(var(--sidebar-width-mobile) + var(--space-xl));
+    right: var(--space-md);
+  }
+}
+
+/* ════════════════════════════════════════════
+   CENTRO DE MANDO EJECUTIVO — LAYOUT & GRID
+   ════════════════════════════════════════════ */
+
+.mando-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.mando-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+}
+
+.mando-header__title-box h1 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mando-header__title-box p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.mando-header__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.subnav-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel-fondo);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+}
+
+.subnav-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.subnav-btn:hover {
+  color: var(--text-heading);
+  background: var(--glass-bg-hover);
+}
+
+.subnav-btn--active {
+  color: var(--accent-navy);
+  background: var(--accent-blue-light);
+  font-weight: 600;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.kpi-card {
+  position: relative;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg-active);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform var(--transition-base), border-color var(--transition-base);
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-hover);
+}
+
+.kpi-card__label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-card__value {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  line-height: 1.1;
+}
+
+.kpi-card__sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.mando-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-md);
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .mando-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mando-map-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  height: 100%;
+}
+
+.mando-map-card {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 480px;
+}
+
+.mando-rail-card {
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  height: 100%;
+  min-height: 480px;
+}
+
+.mando-rail-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.municipios-lista {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.mun-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--panel-fondo-tenue);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mun-item:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+}
+
+.mun-item__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mun-item__nombre {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.mun-item__meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mun-item__badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--sev-preventiva-bg);
+  color: var(--accent-cyan);
+}
+
+
+/* Segundo nivel de navegación: se inserta bajo .mando-header desde auth.js.
+   En pantallas chicas rueda en horizontal en vez de romper el layout. */
+.subnav-bar {
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: 100%;
+  align-self: flex-start;
+}
+
+.subnav-bar::-webkit-scrollbar { display: none; }
+
+.subnav-btn { text-decoration: none; white-space: nowrap; }
+.subnav-btn svg { width: 14px; height: 14px; }
+
+@media (max-width: 640px) {
+  .subnav-bar { align-self: stretch; }
+  .subnav-btn span { display: none; }
+  .subnav-btn { padding: 8px 12px; }
+  .subnav-btn--active span { display: inline; }
+}
+
+/* Dos paneles lado a lado, para separar orígenes de datos que no deben
+   leerse como una sola cifra (INEGI vs INE). */
+.rejilla-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: var(--space-md);
+}
+
+.rejilla-2 .panel + .panel { margin-top: 0; }
+
+/* Franja de color que identifica el origen de un panel de un vistazo. */
+.panel--inegi { border-left: 3px solid var(--serie-3); }
+.panel--ine   { border-left: 3px solid var(--sev-media); }
+
+/* La proyección se marca en el borde igual que las fuentes: quien baja por la
+   página tiene que ver de un golpe dónde deja de leer pasado registrado. */
+.panel--proyeccion { border-left: 3px solid var(--proc-estimacion); }
+
+.lista-supuestos {
+  margin: var(--space-xs) 0 0;
+  padding-left: var(--space-md);
+  color: var(--text-body);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.lista-supuestos li { margin-bottom: 3px; }

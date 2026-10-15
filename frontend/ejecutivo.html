@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Centro de mando ejecutivo: KPIs de la estación, decisiones pendientes y oportunidades.">
+  <title>Centro de Mando — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="ejecutivo">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <!-- Franja superior: estación, turno, conectividad y estado -->
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="layout-dashboard" style="color:var(--accent-cyan);"></i> Centro de Mando — Estación G500</h1>
+          <p>Turno matutino (06:00–14:00) · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+        <div class="mando-header__pills">
+          <span class="badge badge--success" style="padding:6px 12px; font-weight:600; display:flex; align-items:center; gap:6px;">
+            <span class="status-dot status-dot--active"></span> Conectividad OK
+          </span>
+          <span id="badge-estado" class="badge badge--success" style="padding:6px 12px; font-weight:600;">Estado: Normal</span>
+        </div>
+      </section>
+
+      <!-- 8 KPIs -->
+      <section class="kpi-grid" id="kpi-grid"></section>
+
+      <!-- Decisiones + Oportunidades -->
+      <section style="display:grid; grid-template-columns: 1fr 340px; gap:var(--space-md); align-items:start;">
+
+        <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+          <!-- Oportunidades -->
+          <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="lightbulb" style="color:var(--accent-cyan); width:18px; height:18px;"></i>
+              Tarjetas de oportunidad
+            </h3>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:var(--space-md);">
+              Beneficio neto = (ingreso incremental − costo de la acción) × probabilidad de éxito.
+            </p>
+            <div id="oportunidades-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:var(--space-sm);"></div>
+          </div>
+
+          <!-- Comparativo entre estaciones -->
+          <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+            <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px;">
+              <i data-lucide="git-compare-arrows" style="color:var(--accent-cyan); width:18px; height:18px;"></i>
+              Comparativo entre estaciones
+            </h3>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                <thead>
+                  <tr style="text-align:left; color:var(--text-muted); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em;">
+                    <th style="padding:6px 10px;">Estación</th>
+                    <th style="padding:6px 10px;">Litros/día</th>
+                    <th style="padding:6px 10px;">Ticket prom.</th>
+                    <th style="padding:6px 10px;">Margen tienda</th>
+                    <th style="padding:6px 10px;">Escudería</th>
+                    <th style="padding:6px 10px;">Incidentes</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-estaciones"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Decisiones -->
+        <div class="glass-strong" style="padding:var(--space-md); border-radius:var(--radius-lg);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <i data-lucide="list-checks" style="color:var(--accent-cyan); width:15px; height:15px;"></i>
+            <strong style="font-size:0.78rem; color:var(--text-heading); text-transform:uppercase; letter-spacing:0.04em;">Decisiones (máx. 3)</strong>
+          </div>
+          <div id="lista-decisiones" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const KPIS = [
+    { icon: 'fuel',            label: 'Bombas disponibles',        value: '7 / 8',    sub: 'Bomba 3 en mantenimiento' },
+    { icon: 'car',             label: 'Vehículos y fila',          value: '3',        sub: 'Espera media 2.4 min' },
+    { icon: 'droplets',        label: 'Litros y ventas',           value: '18,420 L', sub: '$412,300 en combustible' },
+    { icon: 'target',          label: 'Contribución vs. meta',     value: '92%',      sub: 'Meta del turno: $448,000' },
+    { icon: 'percent',         label: 'Margen aceites/tienda/serv.', value: '31%',    sub: '$38,900 de margen bruto' },
+    { icon: 'users-round',     label: 'Clientes Escudería',        value: '146',      sub: '22 nuevos hoy' },
+    { icon: 'sun',             label: 'Energía solar',             value: '34%',      sub: 'Autoconsumo del turno' },
+    { icon: 'shield-alert',    label: 'Incidentes abiertos',       value: '0',        sub: 'Sin eventos sin resolver' },
+  ];
+
+  const DECISIONES = [
+    { texto: 'Reasignar despachador a Bomba 6 por fila creciente.', responsable: 'Gerente en turno', desde: 'hace 6 min', prioridad: 'ALTA' },
+    { texto: 'Confirmar reabasto de diésel antes de las 16:00.', responsable: 'Jefe de patio', desde: 'hace 18 min', prioridad: 'MEDIA' },
+    { texto: 'Aprobar promo 2x1 de café para bajar inventario.', responsable: 'Encargado de tienda', desde: 'hace 41 min', prioridad: 'NORMAL' },
+  ];
+
+  const PRIORIDAD_COLOR = { ALTA: 'var(--sev-critica)', MEDIA: 'var(--sev-media)', NORMAL: 'var(--status-success)' };
+
+  const OPORTUNIDADES = [
+    { titulo: 'Subir Escudería a clientes de diésel frecuentes', ingreso: 4200, costo: 600, prob: 0.7, estado: 'proyectado' },
+    { titulo: 'Reponer exhibidor de aceite 5W-30 en bomba 2', ingreso: 2100, costo: 300, prob: 0.85, estado: 'observado' },
+    { titulo: 'Turno extra de despacho viernes 17–20h', ingreso: 3600, costo: 900, prob: 0.9, estado: 'confirmado' },
+  ];
+
+  const ESTACIONES = [
+    { nombre: 'G500 — Piso 1 (esta)', litros: '18,420 L', ticket: '$284', margen: '31%', escuderia: 146, incidentes: 0 },
+    { nombre: 'G500 — Carretera Norte', litros: '15,980 L', ticket: '$261', margen: '27%', escuderia: 98, incidentes: 1 },
+    { nombre: 'G500 — Boulevard Sur', litros: '21,050 L', ticket: '$302', margen: '34%', escuderia: 203, incidentes: 0 },
+  ];
+
+  function render() {
+    document.getElementById('kpi-grid').innerHTML = KPIS.map(k => `
+      <div class="kpi-card">
+        <div class="kpi-card__label"><span>${k.label}</span><i data-lucide="${k.icon}" class="icon-xs" style="color:var(--accent-cyan);"></i></div>
+        <div class="kpi-card__value">${k.value}</div>
+        <div class="kpi-card__sub">${k.sub}</div>
+      </div>`).join('');
+
+    document.getElementById('lista-decisiones').innerHTML = DECISIONES.slice(0, 3).map(d => `
+      <div style="padding:10px; background:var(--panel-fondo-tenue); border-radius:var(--radius-sm); border-left:3px solid ${PRIORIDAD_COLOR[d.prioridad]};">
+        <span style="font-size:0.62rem; font-weight:700; color:${PRIORIDAD_COLOR[d.prioridad]}; text-transform:uppercase;">${d.prioridad}</span>
+        <div style="font-size:0.8rem; color:var(--text-body); margin:4px 0;">${d.texto}</div>
+        <div style="font-size:0.68rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <span>${d.responsable}</span><span>${d.desde}</span>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('oportunidades-grid').innerHTML = OPORTUNIDADES.map(o => {
+      const beneficio = Math.round((o.ingreso - o.costo) * o.prob);
+      return `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+        <div style="display:flex; justify-content:space-between; gap:8px; align-items:flex-start;">
+          <strong style="font-size:0.82rem; color:var(--text-heading);">${o.titulo}</strong>
+          <span class="valor-badge valor-badge--${o.estado}">${o.estado}</span>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin:6px 0;">
+          (${o.ingreso.toLocaleString('es-MX')} − ${o.costo.toLocaleString('es-MX')}) × ${(o.prob*100).toFixed(0)}%
+        </div>
+        <div style="font-size:1.1rem; font-weight:800; color:var(--status-success); font-family:var(--font-heading);">
+          +$${beneficio.toLocaleString('es-MX')} beneficio neto
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('tabla-estaciones').innerHTML = ESTACIONES.map(e => `
+      <tr style="border-top:1px solid var(--velo-08);">
+        <td style="padding:8px 10px; color:var(--text-heading); font-weight:600;">${e.nombre}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${e.litros}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${e.ticket}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${e.margen}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${e.escuderia}</td>
+        <td style="padding:8px 10px; color:${e.incidentes ? 'var(--sev-media)' : 'var(--status-success)'};">${e.incidentes}</td>
+      </tr>`).join('');
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    render();
+    G5.initSello('#sello-header');
+  });
+  </script>
+</body>
+</html>

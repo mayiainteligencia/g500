@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Hoja de ruta: fases de construcción y reglas de datos.">
+  <title>Hoja de ruta — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="roadmap">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="map" style="color:var(--accent-cyan);"></i> Hoja de Ruta</h1>
+          <p>Fases de construcción y reglas de datos</p>
+        </div>
+      </section>
+
+      <!-- 5 fases -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Fases de construcción</h3>
+        <div class="escalada" id="fases"></div>
+      </section>
+
+      <!-- Reglas de datos -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Reglas de datos</h3>
+        <div id="reglas" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const FASES = [
+    { titulo: 'Fase 1 — Cimientos', detalle: 'Navbar común, catálogo de páginas y sistema de diseño compartido.', estado: 'hecho' },
+    { titulo: 'Fase 2 — Operación de piso', detalle: 'Vista del gerente (bombas) y consola del despachador con datos de demostración.', estado: 'hecho' },
+    { titulo: 'Fase 3 — Seguridad y energía', detalle: 'Consola de incidentes y panel de energía conectados a datos simulados.', estado: 'activo' },
+    { titulo: 'Fase 4 — Integración real', detalle: 'Conexión a POS, sensores de bomba, cámaras IP e inversor solar.', estado: 'pendiente' },
+    { titulo: 'Fase 5 — Comparativo multiestación', detalle: 'Comparar varias estaciones G500 desde el mismo centro de mando.', estado: 'pendiente' },
+  ];
+
+  const REGLAS = [
+    { titulo: 'Fuente de verdad', texto: 'Cada indicador declara si viene de dato en vivo, cálculo, estimación o demostración — nunca se mezcla sin decirlo.' },
+    { titulo: 'Permisos por rol', texto: 'Gerente, despachador, seguridad y corporativo ven paneles distintos del mismo dato; el selector de rol en la barra superior define la vista.' },
+    { titulo: 'Modo degradado', texto: 'Si un sensor o el POS no responde, la página lo declara ("sin conexión") en vez de mostrar un cero silencioso.' },
+  ];
+
+  function renderFases() {
+    document.getElementById('fases').innerHTML = FASES.map((f, i) => `
+      <div class="escalada__paso escalada__paso--${f.estado}">
+        <span class="escalada__num">${f.estado === 'hecho' ? '<i data-lucide=\"check\" style=\"width:12px;height:12px;\"></i>' : i + 1}</span>
+        <div class="escalada__cuerpo">
+          <div class="escalada__titulo">${f.titulo}</div>
+          <div class="escalada__detalle">${f.detalle}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderReglas() {
+    document.getElementById('reglas').innerHTML = REGLAS.map(r => `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+        <strong style="font-size:0.85rem; color:var(--text-heading);">${r.titulo}</strong>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">${r.texto}</p>
+      </div>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderFases();
+    renderReglas();
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

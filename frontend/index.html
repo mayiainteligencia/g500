@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Centro de mando de la estación de servicio: bombas, despacho, seguridad, energía, comercial y mantenimiento.">
+  <title>Estación del Futuro G500</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Hojas de estilo -->
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="inicio">
+
+  <!-- ════════════════════════════════════════
+       IMAGEN / VIDEO DE FONDO DIVERSIFICADO
+       ════════════════════════════════════════ -->
+  <div class="bg-stage" aria-hidden="true">
+    <video
+      class="bg-stage__video"
+      src="assets/images/Car_driving_through_gas_station_20260926105311.mp4"
+      poster="assets/images/gas-station-poster.jpg"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       BARRA SUPERIOR (Riel de Control & Búsqueda)
+       ════════════════════════════════════════ -->
+  <header class="filter-bar filter-bar--notch" id="filter-bar">
+
+    <!-- Marca, inicio y selector de rol: izquierda -->
+    <div style="display:flex; align-items:center; gap:10px;">
+      <a href="index.html" class="topbar-side" style="gap:10px;">
+        <span class="ce-brand-badge ce-brand-badge--chip">G5</span>
+        <span style="font-weight:700; color:var(--text-heading); font-size:0.95rem;">Estación del Futuro G500</span>
+      </a>
+      <div id="rol-slot"></div>
+    </div>
+
+    <!-- Notch central: acceso directo al centro de mando -->
+    <div class="topbar-notch">
+      <a href="ejecutivo.html" class="filter-pill filter-pill--cta" id="btn-brief-go">
+        <span>Ir al Centro de Mando</span>
+        <i data-lucide="arrow-right" class="filter-pill__icon"></i>
+      </a>
+    </div>
+
+    <!-- Ranura de estado -->
+    <div id="auth-slot"></div>
+  </header>
+
+
+  <!-- ════════════════════════════════════════
+       NAVEGACIÓN LATERAL (Riel vertical principal)
+       ════════════════════════════════════════ -->
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+
+  <!-- ════════════════════════════════════════
+       CONTENIDO PRINCIPAL — LANDING HERO
+       ════════════════════════════════════════ -->
+  <main class="main main--home" id="main-content">
+
+    <!-- Sección Hero Principal -->
+    <section class="hero" id="hero-section">
+      <div class="hero__content">
+        <h1 class="text-hero hero__titulo animate-fade-in-up">
+          Estación del Futuro G500
+        </h1>
+        <p class="hero__description text-body animate-fade-in-up delay-1">
+          Centro de mando de la estación: bombas y despacho, seguridad,
+          energía solar, comercial y mantenimiento, todo en un solo lugar
+          y con la fuente de cada dato declarada.
+        </p>
+
+        <!-- ── Las secciones ──
+             El riel lateral son iconos sin texto: sirve para volver, no
+             para entender. Esto es el índice; el detalle sólo aparece
+             cuando se pide. Nada se despliega solo. -->
+        <div class="etapas-caja">
+          <nav class="etapas" id="etapas" aria-label="Secciones de la plataforma"></nav>
+          <div class="etapa-detalle" id="etapa-detalle" hidden></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Mockup: App del cliente (inferior izquierda) -->
+    <section class="stats-card glass-strong animate-fade-in-left delay-2" style="background: var(--panel-fondo-alto); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); width: 340px;" aria-label="Mockup de la app del cliente">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--velo-08); padding-bottom:10px; margin-bottom:5px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="display:inline-block; width:8px; height:8px; background:var(--accent-cyan); border-radius:50%;" class="animate-pulse"></span>
+          <strong style="color:var(--text-heading); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--font-heading);">App del cliente (mockup)</strong>
+        </div>
+        <i data-lucide="smartphone" class="icon-xs" style="color:var(--accent-cyan);"></i>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.75rem; color:var(--text-body); line-height:1.4;">
+        <div><span style="color:var(--accent-cyan);">[Escudería]</span> 240 pts acumulados — canjea en tienda.</div>
+        <div><span style="color:var(--accent-blue);">[Recarga]</span> Bomba 4 lista. Paga desde la app.</div>
+        <div><span style="color:var(--accent-warm);">[Promo]</span> 2x1 en café hasta las 10:00.</div>
+      </div>
+    </section>
+
+
+    <!-- Card de Detalle & Lanzador de Módulos (inferior derecha) -->
+    <section class="service-card glass-strong animate-fade-in-right delay-3" id="service-card" aria-label="Resumen de la estación">
+      <div class="service-card__header">
+        <div>
+          <h2 class="text-h2" style="color:var(--text-heading);">Estación G500 — Piso 1</h2>
+          <p class="service-card__location text-small">
+            <i data-lucide="map-pin" class="icon-xs" style="color:var(--accent-cyan);"></i>
+            Turno matutino · en operación
+          </p>
+        </div>
+        <a href="ejecutivo.html" class="btn-circle btn-circle--glass" aria-label="Abrir Centro de Mando">
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+
+      <p class="service-card__description text-body truncate-2">
+        8 bombas, despacho asistido, seguridad con IA, generación solar y
+        tienda de conveniencia, medidos con el mismo estándar de dato.
+      </p>
+
+      <!-- Grid de 4 Especificaciones Clave -->
+      <div class="service-card__specs">
+        <div class="spec">
+          <i data-lucide="fuel" style="color:var(--accent-cyan);"></i>
+          <span class="spec__value">8</span>
+          <span class="spec__label">Bombas</span>
+        </div>
+        <div class="spec">
+          <i data-lucide="users-round" style="color:var(--accent-blue);"></i>
+          <span class="spec__value">6</span>
+          <span class="spec__label">Despachadores en turno</span>
+        </div>
+        <div class="spec">
+          <i data-lucide="sun" style="color:var(--accent-gold);"></i>
+          <span class="spec__value">34%</span>
+          <span class="spec__label">Autoconsumo solar</span>
+        </div>
+        <div class="spec">
+          <i data-lucide="shield-alert" style="color:var(--text-muted);"></i>
+          <span class="spec__value">0</span>
+          <span class="spec__label">Incidentes abiertos</span>
+        </div>
+      </div>
+
+      <!-- Acciones de Navegación Rápida -->
+      <div class="service-card__actions">
+        <a href="ejecutivo.html" class="action-btn" style="text-decoration:none;">
+          <span class="action-btn__circle"><i data-lucide="layout-dashboard"></i></span>
+          <span>Centro de Mando</span>
+        </a>
+        <a href="bombas.html" class="action-btn" style="text-decoration:none;">
+          <span class="action-btn__circle"><i data-lucide="fuel"></i></span>
+          <span>Bombas</span>
+        </a>
+        <a href="seguridad.html" class="action-btn" style="text-decoration:none;">
+          <span class="action-btn__circle"><i data-lucide="shield-alert"></i></span>
+          <span>Seguridad</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Logo Marca G500 -->
+    <div class="dc-logo" id="dc-logo" aria-label="Estación del Futuro G500">
+      <span class="ce-brand-badge" style="font-size:1.5rem;">G5</span>
+    </div>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  /* ── Las secciones ──
+     `estado` describe el insumo, no el módulo: 'dato' cuando lo que se ve
+     sale de sensores/POS reales, 'parcial' cuando parte del módulo corre
+     sobre datos de demostración, 'pendiente' cuando el insumo aún no existe.
+     Que el usuario lo sepa antes de entrar. */
+  const ETAPAS = [
+    {
+      icono: 'layout-dashboard',
+      titulo: 'Centro de mando',
+      corto: 'Ejecutivo',
+      resumen: 'Los 8 indicadores de la estación en una sola pantalla, las ' +
+               'decisiones pendientes y el comparativo entre estaciones.',
+      estado: 'parcial',
+      insumo: 'KPIs de bombas, ventas y energía · demo mientras se conecta el POS real',
+      enlaces: [
+        { href: 'ejecutivo.html', label: 'Centro de mando', icono: 'layout-dashboard' },
+      ],
+    },
+    {
+      icono: 'fuel',
+      titulo: 'Piso de la estación',
+      corto: 'Operación',
+      resumen: 'El plano digital de bombas con sus 7 estados, el flujo del ' +
+               'despachador paso a paso y la salud de los dispensarios.',
+      estado: 'parcial',
+      insumo: 'Simulación de bombas y conciliación · pendiente de telemetría real',
+      enlaces: [
+        { href: 'bombas.html', label: 'Vista del gerente', icono: 'fuel' },
+        { href: 'despachador.html', label: 'Despachador', icono: 'tablet-smartphone' },
+        { href: 'mantenimiento.html', label: 'Mantenimiento', icono: 'wrench' },
+      ],
+    },
+    {
+      icono: 'shield-alert',
+      titulo: 'Seguridad e incidentes',
+      corto: 'Seguridad',
+      resumen: 'Feed de alertas por cámara, la matriz de 8 eventos y el ' +
+               'timeline de escalamiento hasta el 911.',
+      estado: 'parcial',
+      insumo: 'Detección simulada · pendiente de integración con cámaras IP',
+      enlaces: [
+        { href: 'seguridad.html', label: 'Consola de incidentes', icono: 'shield-alert' },
+      ],
+    },
+    {
+      icono: 'sun',
+      titulo: 'Energía',
+      corto: 'Energía',
+      resumen: 'El flujo red → estación → consumos y solar → autoconsumo, ' +
+               'almacenamiento y exportación, con retorno del proyecto.',
+      estado: 'parcial',
+      insumo: 'Modelo de generación estimado · pendiente de inversor conectado',
+      enlaces: [
+        { href: 'energia.html', label: 'Panel de energía', icono: 'sun' },
+      ],
+    },
+    {
+      icono: 'shopping-cart',
+      titulo: 'Comercial',
+      corto: 'Comercial',
+      resumen: 'Ventas y margen por línea, el programa Escudería y el panel ' +
+               'de siguiente mejor acción para cada cliente.',
+      estado: 'parcial',
+      insumo: 'Ventas de demostración · pendiente de conexión al POS de tienda',
+      enlaces: [
+        { href: 'comercial.html', label: 'Panel comercial', icono: 'shopping-cart' },
+      ],
+    },
+    {
+      icono: 'map',
+      titulo: 'Hoja de ruta',
+      corto: 'Roadmap',
+      resumen: 'Las 5 fases de construcción de la plataforma y las reglas ' +
+               'de datos: fuente de verdad, permisos por rol y modo degradado.',
+      estado: 'pendiente',
+      insumo: 'Planeación interna, aún sin fecha comprometida',
+      enlaces: [
+        { href: 'roadmap.html', label: 'Hoja de ruta', icono: 'map' },
+      ],
+    },
+  ];
+
+  const SELLO = {
+    dato:      { clase: 'badge--success', texto: 'Datos en vivo' },
+    parcial:   { clase: 'badge--warn',    texto: 'Parcialmente simulado' },
+    pendiente: { clase: 'badge--neutral', texto: 'Pendiente de insumo' },
+  };
+
+  /* En pantalla sólo viven cinco fichas. El detalle —qué hay dentro, con qué
+     dato se sostiene, a dónde se entra— aparece al pedirlo y se va al cerrar,
+     así que el home nunca carga con más de lo que se puede leer de un vistazo. */
+  function pintarEtapas() {
+    const barra = document.getElementById('etapas');
+    const panel = document.getElementById('etapa-detalle');
+    let abierta = -1;
+
+    barra.innerHTML = ETAPAS.map((e, i) => `
+      <button type="button" class="etapa" data-etapa="${i}"
+              aria-expanded="false" aria-controls="etapa-detalle">
+        <span class="etapa__num">${String(i + 1).padStart(2, '0')}</span>
+        <span class="etapa__icono"><i data-lucide="${e.icono}"></i></span>
+        <span class="etapa__corto">${e.corto}</span>
+      </button>`).join('');
+
+    function cerrar() {
+      abierta = -1;
+      panel.hidden = true;
+      panel.innerHTML = '';
+      barra.querySelectorAll('.etapa').forEach((b) => {
+        b.classList.remove('etapa--activa');
+        b.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function abrir(i) {
+      const e = ETAPAS[i];
+      abierta = i;
+
+      barra.querySelectorAll('.etapa').forEach((b) => {
+        const activa = Number(b.dataset.etapa) === i;
+        b.classList.toggle('etapa--activa', activa);
+        b.setAttribute('aria-expanded', String(activa));
+      });
+
+      panel.innerHTML = `
+        <button type="button" class="etapa-detalle__cerrar" aria-label="Cerrar">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 class="etapa-detalle__titulo">
+          <span class="etapa-detalle__num">${String(i + 1).padStart(2, '0')}</span>
+          ${e.titulo}
+        </h2>
+        <p class="etapa-detalle__resumen">${e.resumen}</p>
+        <div class="etapa-detalle__enlaces">
+          ${e.enlaces.map((l) => `
+            <a href="${l.href}" class="etapa-detalle__pill">
+              <i data-lucide="${l.icono}"></i><span>${l.label}</span>
+            </a>`).join('')}
+        </div>
+        <footer class="etapa-detalle__pie">
+          <span class="badge ${SELLO[e.estado].clase}">${SELLO[e.estado].texto}</span>
+          <span class="etapa-detalle__insumo">${e.insumo}</span>
+        </footer>`;
+      panel.hidden = false;
+      panel.querySelector('.etapa-detalle__cerrar').addEventListener('click', cerrar);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    barra.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.etapa');
+      if (!btn) return;
+      const i = Number(btn.dataset.etapa);
+      if (i === abierta) cerrar(); else abrir(i);
+    });
+
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && abierta >= 0) cerrar();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    pintarEtapas();
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+==========================================================================
+PERFILADO DE DATOS - circuito exterior medido ejemplo.xlsx
+Hecho por : Martin Cortes
+Ejecutado : 2026-08-12 10:28
+==========================================================================
+
+El archivo tiene 3 hoja(s): ['HOJA', 'RESUMEN', 'FILTROS']
+
+--------------------------------------------------------------------------
+HOJA: HOJA
+  VEREDICTO: FUENTE DE DATOS (importable)
+  Dimensiones: 77 filas x 26 columnas
+  Columnas:
+      #  NOMBRE                   TIPO           VACIOS  NOTAS
+      1  latitude                 float64        0 (0%)  
+      2  longitude                float64        0 (0%)  
+      3  name                     str            0 (0%)  
+      4  address                  str            0 (0%)  
+      5  metropolitan area        str            0 (0%)  
+      6  city                     str            0 (0%)  
+      7  province                 str            0 (0%)  
+      8  measures                 float64      77 (100%)  
+      9  type                     str            0 (0%)  casing inconsistente ej. ['Puente', 'PUENTE']
+     10  structure                float64      77 (100%)  
+     11  male_users               int64          0 (0%)  
+     12  female_users             int64          0 (0%)  
+     13  a18_25_users             int64          0 (0%)  
+     14  a26_40_users             int64          0 (0%)  
+     15  a41_55_users             int64          0 (0%)  
+     16  a55_users                int64          0 (0%)  
+     17  income_a_users           int64          0 (0%)  
+     18  income_b_users           int64          0 (0%)  
+     19  income_c_users           int64          0 (0%)  
+     20  income_d_users           int64          0 (0%)  
+     21  income_e_users           int64          0 (0%)  
+     22  total_users              int64          0 (0%)  
+     23  total_hits               int64          0 (0%)  
+     24  reach_auf                float64        0 (0%)  
+     25  reach_country            float64        0 (0%)  
+     26  affinity                 int64          0 (0%)  
+  Aviso - columnas con MUCHOS vacios (>=30%), preguntar al cliente:
+     - measures: 100% vacio
+     - structure: 100% vacio
+
+--------------------------------------------------------------------------
+HOJA: RESUMEN
+  VEREDICTO: FUENTE DE DATOS (importable)
+  Dimensiones: 9 filas x 11 columnas
+  Columnas:
+      #  NOMBRE                   TIPO           VACIOS  NOTAS
+      1  Variable                 str            0 (0%)  posible LLAVE (todo unico)
+      2  Población total          int64          0 (0%)  posible LLAVE (todo unico)
+      3  Población del target     int64          0 (0%)  posible LLAVE (todo unico)
+      4  Usuarios únicos          int64          0 (0%)  
+      5  Alcance total            float64        0 (0%)  posible LLAVE (todo unico)
+      6  Alcance al target        float64        0 (0%)  posible LLAVE (todo unico)
+      7  Frecuencia               float64        0 (0%)  
+      8  Impactos                 int64          0 (0%)  
+      9  Gross Rating Points (GRP float64        0 (0%)  posible LLAVE (todo unico)
+     10  Target Rating Point (TRP float64        0 (0%)  posible LLAVE (todo unico)
+     11  Soportes evaluados       float64       1 (11%)  
+
+--------------------------------------------------------------------------
+HOJA: FILTROS
+  VEREDICTO: FUENTE DE DATOS (revisar - 1 senal dudosa)
+     - muy pocas filas de datos
+  Dimensiones: 1 filas x 18 columnas
+  Columnas:
+      #  NOMBRE                   TIPO           VACIOS  NOTAS
+      1  Listado de circuitos     str            0 (0%)  posible LLAVE (todo unico)
+      2  País                     str            0 (0%)  posible LLAVE (todo unico)
+      3  Días                     int64          0 (0%)  posible LLAVE (todo unico)
+      4  Fecha inicial            str            0 (0%)  posible LLAVE (todo unico)
+      5  Fecha final              str            0 (0%)  posible LLAVE (todo unico)
+      6  Masculino                bool           0 (0%)  posible LLAVE (todo unico)
+      7  Femenino                 bool           0 (0%)  posible LLAVE (todo unico)
+      8  De 18 a 25 años          bool           0 (0%)  posible LLAVE (todo unico)
+      9  De 26 a 40 años          bool           0 (0%)  posible LLAVE (todo unico)
+     10  De 41 a 55 años          bool           0 (0%)  posible LLAVE (todo unico)
+     11  Mayor de 55 años         bool           0 (0%)  posible LLAVE (todo unico)
+     12  Nivel Socioeconómico Alt bool           0 (0%)  posible LLAVE (todo unico)
+     13  Nivel Socioeconómico Med bool           0 (0%)  posible LLAVE (todo unico)
+     14  Nivel Socioeconómico Med bool           0 (0%)  posible LLAVE (todo unico)
+     15  Nivel Socioeconómico Med bool           0 (0%)  posible LLAVE (todo unico)
+     16  Nivel Socioeconómico Baj bool           0 (0%)  posible LLAVE (todo unico)
+     17  Distancia                float64      1 (100%)  
+     18  Unnamed: 17              int64          0 (0%)  posible LLAVE (todo unico)
+  Aviso - columnas con MUCHOS vacios (>=30%), preguntar al cliente:
+     - Distancia: 100% vacio
+
+==========================================================================
+RESUMEN - que hago con cada hoja
+==========================================================================
+  [Fuentes de datos] importar 3: ['HOJA', 'RESUMEN', 'FILTROS']
+  [Pivotes/reportes] ignorar 0: []
+
+  Recordatorio: los vacios se quedan como NULL. Nunca los relleno
+  con '-' en el dato. El '-' es solo para el frontend, al final.
+
+--------------------------------------------------------------------------
+Reporte generado por Martin Cortes el 2026-08-12 10:28.

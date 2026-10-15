@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Panel de energía: flujo red/solar, indicadores y retorno del proyecto.">
+  <title>Energía — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="energia">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="sun" style="color:var(--accent-cyan);"></i> Energía y Generación Solar</h1>
+          <p>Red + planta solar de la estación · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+      </section>
+
+      <!-- Diagrama de flujo -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-md);">Flujo de energía</h3>
+        <div class="flujo">
+          <div class="flujo__nodo"><i data-lucide="zap"></i><strong>Red CFE</strong><span>28 kW</span></div>
+          <div class="flujo__flecha flujo__flecha--activa"></div>
+          <div class="flujo__nodo"><i data-lucide="building-2"></i><strong>Estación</strong><span>Consumo total 42 kW</span></div>
+          <div class="flujo__flecha"></div>
+          <div class="flujo__nodo"><i data-lucide="fuel"></i><strong>Bombas y luces</strong><span>26 kW</span></div>
+        </div>
+        <div class="flujo" style="margin-top:var(--space-md);">
+          <div class="flujo__nodo"><i data-lucide="sun"></i><strong>Solar</strong><span>14 kW generados</span></div>
+          <div class="flujo__flecha flujo__flecha--activa"></div>
+          <div class="flujo__nodo"><i data-lucide="battery-charging"></i><strong>Autoconsumo</strong><span>10 kW</span></div>
+          <div class="flujo__flecha flujo__flecha--activa"></div>
+          <div class="flujo__nodo"><i data-lucide="battery"></i><strong>Almacenamiento</strong><span>3 kW</span></div>
+          <div class="flujo__flecha"></div>
+          <div class="flujo__nodo"><i data-lucide="upload"></i><strong>Exportación</strong><span>1 kW a red</span></div>
+        </div>
+      </section>
+
+      <!-- 11 indicadores solares -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Tablero solar — real vs. esperado</h3>
+        <div id="indicadores-solares" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <section style="display:grid; grid-template-columns: 1fr 1fr; gap:var(--space-md); align-items:start;">
+        <!-- Beneficio neto -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:8px;">Beneficio neto del proyecto</h3>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+            Ahorro en CFE + venta de excedente − costo de operación y mantenimiento.
+          </p>
+          <div style="font-size:0.85rem; color:var(--text-body); margin-bottom:6px;">
+            ($18,400 + $1,200) − $2,100 = <strong style="color:var(--status-success);">$17,500 / mes</strong>
+          </div>
+          <span class="valor-badge valor-badge--observado">observado</span>
+        </div>
+
+        <!-- Retorno del proyecto -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:8px;">Retorno del proyecto</h3>
+          <div class="kpi-card__value" style="margin-bottom:4px;">3.4 años</div>
+          <div class="kpi-card__sub">Inversión $712,000 · ahorro mensual proyectado $17,500</div>
+          <span class="valor-badge valor-badge--proyectado" style="margin-top:8px; display:inline-flex;">proyectado</span>
+        </div>
+      </section>
+
+      <!-- P&L de recarga eléctrica (opcional) -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">P&amp;L de recarga eléctrica <span style="font-size:0.7rem; color:var(--text-muted); font-weight:400;">(opcional)</span></h3>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+            <tbody id="tabla-pnl"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const INDICADORES_SOLARES = [
+    { label: 'Generación instantánea', real: '14 kW', esperado: '16 kW' },
+    { label: 'Generación acumulada hoy', real: '58 kWh', esperado: '64 kWh' },
+    { label: 'Irradiancia', real: '710 W/m²', esperado: '760 W/m²' },
+    { label: 'Temperatura de panel', real: '46 °C', esperado: '≤ 50 °C' },
+    { label: 'Eficiencia del inversor', real: '96.2%', esperado: '≥ 96%' },
+    { label: 'Autoconsumo', real: '34%', esperado: '38%' },
+    { label: 'Exportación a red', real: '1 kW', esperado: '1.2 kW' },
+    { label: 'Estado de baterías', real: '82%', esperado: '≥ 70%' },
+    { label: 'Disponibilidad del sistema', real: '99.4%', esperado: '≥ 99%' },
+    { label: 'CO₂ evitado hoy', real: '38 kg', esperado: '42 kg' },
+    { label: 'Alarmas activas', real: '0', esperado: '0' },
+  ];
+
+  const PNL_RECARGA = [
+    { concepto: 'Sesiones de recarga hoy', valor: '9' },
+    { concepto: 'kWh entregados', valor: '112 kWh' },
+    { concepto: 'Ingreso por recarga', valor: '$896' },
+    { concepto: 'Costo de energía', valor: '$302' },
+    { concepto: 'Margen', valor: '$594' },
+  ];
+
+  function renderIndicadores() {
+    document.getElementById('indicadores-solares').innerHTML = INDICADORES_SOLARES.map(i => `
+      <div style="padding:10px 12px; background:var(--panel-fondo); border-radius:var(--radius-sm); border:1px solid var(--glass-border);">
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:4px;">${i.label}</div>
+        <div style="font-size:1rem; font-weight:800; color:var(--text-heading); font-family:var(--font-heading);">${i.real}</div>
+        <div style="font-size:0.68rem; color:var(--text-muted);">esperado: ${i.esperado}</div>
+      </div>`).join('');
+  }
+
+  function renderPnl() {
+    document.getElementById('tabla-pnl').innerHTML = PNL_RECARGA.map(p => `
+      <tr style="border-top:1px solid var(--velo-08);">
+        <td style="padding:8px 10px; color:var(--text-body);">${p.concepto}</td>
+        <td style="padding:8px 10px; color:var(--text-heading); font-weight:700; text-align:right;">${p.valor}</td>
+      </tr>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderIndicadores();
+    renderPnl();
+    G5.initSello('#sello-header');
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+/* ============================================
+   ESTACIÓN DEL FUTURO G500 — ARCHIVO DE COLORES
+   ============================================
+   Todos los colores del proyecto están aquí.
+   Ningún otro CSS debe tener colores hardcoded.
+
+   Paleta oscura de centro de mando: azules casi
+   negros, superficies translúcidas y acentos de
+   alta saturación reservados para señal (riesgo,
+   severidad, procedencia del dato).
+
+   Los nombres de token son los mismos que en la
+   versión clara: el resto del CSS no se tocó.
+   ============================================ */
+
+:root {
+  /* ── Fondo de página (Oscuro uniforme constante) ── */
+  --bg-start:           #080c14;
+  --bg-mid:             #0a0f1d;
+  --bg-end:             #080c14;
+  --bg-gradient:        linear-gradient(180deg, #080c14 0%, #0a0f1d 50%, #080c14 100%);
+
+  /* ── Glassmorphism ──
+     En oscuro el vidrio es luz añadida, no blanco
+     bajado: superficies muy tenues sobre el fondo
+     y un borde apenas visible que define el canto. */
+  --glass-bg:           rgba(148, 178, 230, 0.06);
+  --glass-bg-hover:     rgba(148, 178, 230, 0.10);
+  --glass-bg-active:    rgba(148, 178, 230, 0.14);
+  --glass-border:       rgba(190, 214, 255, 0.12);
+  --glass-border-hover: rgba(190, 214, 255, 0.22);
+  --glass-shadow:       0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.60);
+
+  /* ── Texto ── */
+  --text-heading:       #eef2f9;    /* Titulares y cifras */
+  --text-body:          #b6c2d4;    /* Cuerpo */
+  --text-muted:         #74839a;    /* Labels, metadatos, fuentes */
+  --text-hero:          #ffffff;
+  --text-hero-shadow:   0 2px 40px rgba(0, 0, 0, 0.55);
+  --text-on-accent:     #0a0e17;    /* Sobre acentos claros va texto oscuro */
+
+  /* ── Acentos ── */
+  --accent-coral:       #ff5c72;    /* Riesgo, crítico */
+  --accent-coral-hover: #ff7285;
+  --accent-blue:        #5b9dff;    /* Highlights, foco, selección */
+  --accent-blue-light:  rgba(91, 157, 255, 0.16);
+  --accent-navy:        #4361ee;    /* Botón principal, activo */
+  --accent-navy-light:  #5a76f5;
+  --accent-purple:      #a78bfa;
+  --accent-warm:        #f5a524;
+  --accent-cyan:        #22d3ee;    /* Actividad de agentes, tiempo real */
+  --accent-green:       #34d399;
+
+  /* ── Sidebar ── */
+  --sidebar-bg:         rgba(11, 17, 32, 0.82);
+  --sidebar-icon:       #74839a;
+  --sidebar-icon-active: #ffffff;
+  --sidebar-icon-bg-active: var(--accent-navy);
+
+  /* ── Superficies elevadas ──
+     Barras, píldoras, botones circulares: piezas que
+     flotan sobre el fondo y necesitan cuerpo propio.
+     En la versión clara esto eran blancos al 75–94 %. */
+  --superficie:         rgba(22, 32, 53, 0.86);
+  --superficie-hover:   rgba(33, 46, 74, 0.96);
+
+  /* ── Cards ── */
+  --card-bg:            rgba(148, 178, 230, 0.055);
+  --card-border:        rgba(190, 214, 255, 0.11);
+  --card-shadow:        0 4px 24px rgba(0, 0, 0, 0.40);
+  --card-bg-raised:     rgba(148, 178, 230, 0.09);   /* Card dentro de card */
+
+  /* ── Filtros / Pills ── */
+  --pill-bg:            rgba(148, 178, 230, 0.09);
+  --pill-border:        rgba(190, 214, 255, 0.14);
+  --pill-text:          var(--text-heading);
+  --pill-label:         var(--text-muted);
+
+  /* ── Botones ── */
+  --btn-primary-bg:     var(--accent-navy);
+  --btn-primary-text:   #ffffff;
+  --btn-primary-hover:  var(--accent-navy-light);
+  --btn-glass-bg:       var(--glass-bg);
+  --btn-glass-border:   var(--glass-border);
+  --btn-glass-text:     var(--text-heading);
+
+  /* ── Blobs / Decoración ── */
+  --blob-primary:       rgba(67, 97, 238, 0.20);
+  --blob-secondary:     rgba(167, 139, 250, 0.14);
+  --blob-warm:          rgba(34, 211, 238, 0.10);
+
+  /* ── Blur para contenido restringido por rol ── */
+  --blur-overlay:       rgba(10, 14, 23, 0.62);
+  --blur-amount:        blur(8px);
+
+  /* ── Status genéricos ── */
+  --status-success:     #34d399;
+  --status-pending:     #f5a524;
+  --status-rejected:    #ff5c72;
+  --status-error:       #ff5c72;
+  --status-meeting:     var(--accent-purple);
+
+  /* ── Bordes ── */
+  --border-light:       rgba(190, 214, 255, 0.08);
+  --border-medium:      rgba(190, 214, 255, 0.15);
+
+
+  /* ════════════════════════════════════════════
+     SEVERIDAD DE ALERTAS — módulo 12
+     Cinco niveles. El color es el único canal que
+     NO debe llevar el significado solo: siempre va
+     acompañado de la etiqueta de texto.
+     ════════════════════════════════════════════ */
+  --sev-critica:        #ff4757;
+  --sev-critica-bg:     rgba(255, 71, 87, 0.14);
+  --sev-alta:           #ff8c42;
+  --sev-alta-bg:        rgba(255, 140, 66, 0.14);
+  --sev-media:          #f5c518;
+  --sev-media-bg:       rgba(245, 197, 24, 0.14);
+  --sev-preventiva:     #38bdf8;
+  --sev-preventiva-bg:  rgba(56, 189, 248, 0.14);
+  --sev-informativa:    #8b97ab;
+  --sev-informativa-bg: rgba(139, 151, 171, 0.14);
+
+
+  /* ════════════════════════════════════════════
+     PROCEDENCIA DE LA INFORMACIÓN — regla transversal 4
+     Toda salida de agente se etiqueta con uno de
+     estos cinco. Es el sistema visual que distingue
+     un hecho de una interpretación.
+     ════════════════════════════════════════════ */
+  --proc-dato:            #22d3ee;   /* Viene de una fuente */
+  --proc-dato-bg:         rgba(34, 211, 238, 0.13);
+  --proc-calculo:         #a78bfa;   /* Resultado de fórmula */
+  --proc-calculo-bg:      rgba(167, 139, 250, 0.13);
+  --proc-estimacion:      #f5a524;   /* Resultado de modelo */
+  --proc-estimacion-bg:   rgba(245, 165, 36, 0.13);
+  --proc-inferencia:      #f472b6;   /* Interpretación analítica */
+  --proc-inferencia-bg:   rgba(244, 114, 182, 0.13);
+  --proc-recomendacion:   #34d399;   /* Sujeta a autorización humana */
+  --proc-recomendacion-bg: rgba(52, 211, 153, 0.13);
+
+
+  /* Escala secuencial: baja → alta. Perceptualmente ordenada y legible en oscuro. */
+  --escala-1:           #14304d;
+  --escala-2:           #1c4f70;
+  --escala-3:           #217391;
+  --escala-4:           #2699a9;
+  --escala-5:           #45c0b0;
+  --escala-6:           #8ee0ae;
+
+  /* Escala divergente para comparaciones (real vs. esperado, meta vs. logrado). */
+  --div-neg-fuerte:     #ff4757;
+  --div-neg:            #ff8c42;
+  --div-centro:         #3d4859;
+  --div-pos:            #45c0b0;
+  --div-pos-fuerte:     #34d399;
+
+
+  /* ════════════════════════════════════════════
+     GRÁFICAS — misma paleta en todos los módulos
+     ════════════════════════════════════════════ */
+  --serie-1:            #5b9dff;
+  --serie-2:            #22d3ee;
+  --serie-3:            #a78bfa;
+  --serie-4:            #f5a524;
+  --serie-5:            #34d399;
+  --serie-6:            #f472b6;
+  --serie-7:            #8b97ab;
+
+  --grafica-grid:       rgba(190, 214, 255, 0.07);
+  --grafica-eje:        rgba(190, 214, 255, 0.20);
+  --grafica-tooltip-bg: rgba(14, 21, 36, 0.96);
+
+  /* ════════════════════════════════════════════
+     TINTES Y SUPERFICIES
+     ════════════════════════════════════════════
+     Creados al limpiar 289 colores hardcoded que
+     estaban repartidos en 21 archivos. Cada uno
+     cubre un uso que se repetía literal en varias
+     páginas; no son valores nuevos inventados.
+     ════════════════════════════════════════════ */
+
+  /* Fondo de tarjeta dentro de un panel. Era rgba(15,23,42,·) suelto. */
+  --panel-fondo:        rgba(15, 23, 42, 0.50);
+  --panel-fondo-tenue:  rgba(15, 23, 42, 0.40);
+  --panel-fondo-alto:   rgba(15, 23, 42, 0.80);
+
+  /* Superficies muy oscuras: popups, barras fijas, overlays. */
+  --superficie-honda:   rgba(11, 17, 32, 0.92);
+  --superficie-solida:  rgba(11, 17, 32, 0.96);
+  --overlay-fondo:      rgba(8, 12, 20, 0.80);
+  --overlay-fondo-alto: rgba(8, 12, 20, 0.95);
+
+  /* Tintes de cian: actividad de agentes y estados en vivo. */
+  --cyan-tinte-xs:      rgba(34, 211, 238, 0.06);
+  --cyan-tinte-sm:      rgba(34, 211, 238, 0.10);
+  --cyan-tinte:         rgba(34, 211, 238, 0.15);
+  --cyan-tinte-md:      rgba(34, 211, 238, 0.25);
+  --cyan-tinte-lg:      rgba(34, 211, 238, 0.40);
+  --cyan-transparente:  rgba(34, 211, 238, 0);
+  --cyan-halo:          0 0 6px rgba(34, 211, 238, 0.50);
+
+  /* Sombras. Antes eran rgba(23,30,56,·) y rgba(34,27,94,·),
+     residuo del tema claro donde la sombra era azul-violeta. */
+  --sombra-sm:          0 8px 22px -8px rgba(0, 0, 0, 0.45);
+  --sombra-md:          0 10px 30px -10px rgba(0, 0, 0, 0.55);
+  --sombra-lg:          0 16px 40px -10px rgba(0, 0, 0, 0.65);
+  --sombra-negra:       rgba(0, 0, 0, 0.20);
+  --sombra-negra-alta:  rgba(0, 0, 0, 0.50);
+  /* Sombra de la ficha emergente del mapa. Es más corta y menos densa que
+     --sombra-lg porque el popup flota a pocos píxeles del punto, no sobre
+     el fondo de la página. */
+  --sombra-ficha:       0 12px 34px rgba(0, 0, 0, 0.42);
+
+  /* Velos blancos: bordes y superficies apenas visibles. */
+  --velo-01:            rgba(255, 255, 255, 0.02);
+  --velo-05:            rgba(255, 255, 255, 0.05);
+  --velo-08:            rgba(255, 255, 255, 0.08);
+  --velo-10:            rgba(255, 255, 255, 0.10);
+
+
+  /* Marca G500. El degradado del monograma es identidad, no paleta de UI:
+     por eso vive aparte y no se reusa para nada más. */
+  --marca-ce-desde:     #38bdf8;
+  --marca-ce-hasta:     #818cf8;
+
+  /* ════════════════════════════════════════════
+     ESTADOS DE BOMBA — bombas.html
+     Siete estados, un color cada uno. El color nunca
+     es el único canal: siempre va con la etiqueta.
+     ════════════════════════════════════════════ */
+  --bomba-libre:        #34d399;
+  --bomba-libre-bg:     rgba(52, 211, 153, 0.14);
+  --bomba-ocupada:      #5b9dff;
+  --bomba-ocupada-bg:   rgba(91, 157, 255, 0.14);
+  --bomba-cargando:     #22d3ee;
+  --bomba-cargando-bg:  rgba(34, 211, 238, 0.14);
+  --bomba-pago:         #f5c518;
+  --bomba-pago-bg:      rgba(245, 197, 24, 0.14);
+  --bomba-fuera:        #8b97ab;
+  --bomba-fuera-bg:     rgba(139, 151, 171, 0.14);
+  --bomba-mantenimiento: #f5a524;
+  --bomba-mantenimiento-bg: rgba(245, 165, 36, 0.14);
+  --bomba-bloqueo:      #ff4757;
+  --bomba-bloqueo-bg:   rgba(255, 71, 87, 0.14);
+}

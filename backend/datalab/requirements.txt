@@ -1,0 +1,27 @@
+# Dependencias del laboratorio de datos.
+#
+#     python3 -m venv backend/datalab/venv
+#     backend/datalab/venv/bin/python -m pip install -r backend/datalab/requirements.txt
+#
+# Ojo con la segunda línea: SIEMPRE `python -m pip`, nunca `bin/pip`. Los
+# scripts de bin/ llevan la ruta del intérprete escrita en su shebang, así que
+# un venv copiado de otro proyecto instala en el proyecto original sin avisar.
+# Es exactamente lo que le pasó a este venv antes de recrearse: su bin/pip
+# apuntaba a agroMayia y su pyvenv.cfg decía que se creó en PRIBrain.
+#
+# Sólo va lo que los pipelines importan de verdad. La copia anterior arrastraba
+# pandas, python-dateutil y six, que no los usa nadie.
+
+# Lectura de los XLSX del IEEC, del INE y de la ASECAM.
+#   build_electoral.py · build_ine_cartografia.py · build_auditoria.py
+openpyxl==3.1.5
+
+# Monte Carlo de la proyección y descomposición de varianza del tracking.
+#   build_proyeccion.py · build_encuestas.py
+numpy==2.5.1
+
+# Extracción de texto de los PDF de la ley electoral y de los acuerdos del
+# IEEC. Ningún pipeline lo importa: se usa a mano cuando llega un documento
+# nuevo que hay que transcribir, y el texto extraído se conserva en
+# uploads/ieec_acuerdos/. Se deja declarado para poder repetir esa extracción.
+pypdf==6.16.1

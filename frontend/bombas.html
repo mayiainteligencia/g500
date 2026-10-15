@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Vista del gerente: plano digital de bombas, pronóstico por hora y conciliación.">
+  <title>Bombas — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="bombas">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="fuel" style="color:var(--accent-cyan);"></i> Vista del Gerente — Bombas</h1>
+          <p>Plano digital de la estación · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+        <div class="mando-header__pills">
+          <div class="pump-leyenda" id="leyenda"></div>
+        </div>
+      </section>
+
+      <section style="display:grid; grid-template-columns: 1fr 340px; gap:var(--space-md); align-items:start;">
+
+        <div class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <div class="pump-grid" id="pump-grid"></div>
+        </div>
+
+        <!-- Panel lateral -->
+        <div class="glass-strong tech-panel" id="panel-bomba" style="padding:var(--space-md); border-radius:var(--radius-lg); min-height:300px;">
+          <p style="font-size:0.82rem; color:var(--text-muted);">Selecciona una bomba para ver su detalle.</p>
+        </div>
+      </section>
+
+      <!-- Pronóstico por hora -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px;">
+          <i data-lucide="line-chart" style="color:var(--accent-cyan); width:18px; height:18px;"></i>
+          Pronóstico de demanda por hora
+        </h3>
+        <div id="pronostico" style="display:flex; align-items:flex-end; gap:6px; height:120px;"></div>
+      </section>
+
+      <!-- Conciliación -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm); display:flex; align-items:center; gap:8px;">
+          <i data-lucide="scale" style="color:var(--accent-cyan); width:18px; height:18px;"></i>
+          Conciliación: entrega, inventario, despacho y venta
+        </h3>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+            <thead>
+              <tr style="text-align:left; color:var(--text-muted); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em;">
+                <th style="padding:6px 10px;">Producto</th>
+                <th style="padding:6px 10px;">Entrega</th>
+                <th style="padding:6px 10px;">Inventario</th>
+                <th style="padding:6px 10px;">Despacho</th>
+                <th style="padding:6px 10px;">Venta</th>
+                <th style="padding:6px 10px;">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-conciliacion"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const ESTADOS_BOMBA = {
+    libre:          { color: 'var(--bomba-libre)',          label: 'Libre' },
+    ocupada:        { color: 'var(--bomba-ocupada)',        label: 'Ocupada' },
+    cargando:       { color: 'var(--bomba-cargando)',       label: 'Cargando' },
+    pago:           { color: 'var(--bomba-pago)',           label: 'Pago pendiente' },
+    fuera:          { color: 'var(--bomba-fuera)',          label: 'Fuera de servicio' },
+    mantenimiento:  { color: 'var(--bomba-mantenimiento)',  label: 'Mantenimiento' },
+    bloqueo:        { color: 'var(--bomba-bloqueo)',        label: 'Bloqueo por seguridad' },
+  };
+
+  const BOMBAS = [
+    { num: 1, estado: 'ocupada',  producto: 'Regular', tiempo: '3:12', despachador: 'J. Reyes', pos: 'Conectado', accion: 'Ninguna' },
+    { num: 2, estado: 'cargando', producto: 'Premium', tiempo: '1:04', despachador: 'M. Cauich', pos: 'Conectado', accion: 'Ninguna' },
+    { num: 3, estado: 'mantenimiento', producto: '—', tiempo: '—', despachador: '—', pos: '—', accion: 'Cerrar orden de trabajo #WO-118' },
+    { num: 4, estado: 'libre',    producto: '—', tiempo: '—', despachador: '—', pos: 'Conectado', accion: 'Ninguna' },
+    { num: 5, estado: 'pago',     producto: 'Diésel', tiempo: '0:42', despachador: 'A. Poot', pos: 'Falla de red', accion: 'Reintentar cobro o cobrar manual' },
+    { num: 6, estado: 'ocupada',  producto: 'Regular', tiempo: '5:50', despachador: 'J. Reyes', pos: 'Conectado', accion: 'Vigilar: tiempo por encima del promedio' },
+    { num: 7, estado: 'bloqueo',  producto: '—', tiempo: '—', despachador: '—', pos: '—', accion: 'Confirmar evento de seguridad antes de reabrir' },
+    { num: 8, estado: 'libre',    producto: '—', tiempo: '—', despachador: '—', pos: 'Conectado', accion: 'Ninguna' },
+  ];
+
+  const CONCILIACION = [
+    { producto: 'Regular', entrega: '8,000 L', inventario: '5,120 L', despacho: '2,860 L', venta: '2,860 L', estado: 'confirmada' },
+    { producto: 'Premium', entrega: '3,000 L', inventario: '1,940 L', despacho: '1,050 L', venta: '1,050 L', estado: 'confirmada' },
+    { producto: 'Diésel',  entrega: '6,000 L', inventario: '4,380 L', despacho: '1,600 L', venta: '1,580 L', estado: 'investigada' },
+  ];
+  const ESTADO_CONC = {
+    pendiente:  { clase: 'badge--neutral', texto: 'Pendiente' },
+    investigada:{ clase: 'badge--warn',    texto: 'Investigada — 20 L de diferencia' },
+    explicada:  { clase: 'badge--info',    texto: 'Explicada' },
+    confirmada: { clase: 'badge--success', texto: 'Confirmada' },
+  };
+
+  function renderLeyenda() {
+    document.getElementById('leyenda').innerHTML = Object.values(ESTADOS_BOMBA).map(e => `
+      <span class="pump-leyenda__item"><span class="pump-leyenda__dot" style="background:${e.color};"></span>${e.label}</span>`).join('');
+  }
+
+  function renderBombas() {
+    document.getElementById('pump-grid').innerHTML = BOMBAS.map(b => {
+      const cfg = ESTADOS_BOMBA[b.estado];
+      return `
+      <div class="pump pump--${b.estado}" data-num="${b.num}">
+        <span class="pump__num">Bomba ${b.num}</span>
+        <span class="pump__estado">${cfg.label}</span>
+        <span class="pump__meta">${b.producto !== '—' ? b.producto : ''}</span>
+      </div>`;
+    }).join('');
+
+    document.querySelectorAll('.pump').forEach(el => {
+      el.addEventListener('click', () => seleccionar(Number(el.dataset.num)));
+    });
+  }
+
+  function seleccionar(num) {
+    document.querySelectorAll('.pump').forEach(el => el.classList.toggle('pump--selected', Number(el.dataset.num) === num));
+    const b = BOMBAS.find(x => x.num === num);
+    const cfg = ESTADOS_BOMBA[b.estado];
+    document.getElementById('panel-bomba').innerHTML = `
+      <h3 class="text-h3" style="margin-bottom:10px;">Bomba ${b.num}</h3>
+      <span class="badge" style="background:transparent; border:1px solid ${cfg.color}; color:${cfg.color}; margin-bottom:12px; display:inline-block;">${cfg.label}</span>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Producto</span><span style="color:var(--text-heading);">${b.producto}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Tiempo en curso</span><span style="color:var(--text-heading);">${b.tiempo}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Despachador</span><span style="color:var(--text-heading);">${b.despachador}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-muted);">Conexión POS/pago</span><span style="color:var(--text-heading);">${b.pos}</span></div>
+      </div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--velo-08);">
+        <span style="font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Acción recomendada</span>
+        <p style="font-size:0.82rem; color:var(--text-body); margin-top:4px;">${b.accion}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderPronostico() {
+    const horas = ['6h','8h','10h','12h','14h','16h','18h','20h'];
+    const valores = [30, 55, 72, 88, 95, 80, 60, 40];
+    const max = Math.max(...valores);
+    document.getElementById('pronostico').innerHTML = horas.map((h, i) => `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <div style="width:100%; height:${(valores[i]/max*90)}px; background:var(--accent-cyan); opacity:0.55; border-radius:4px 4px 0 0;"></div>
+        <span style="font-size:0.65rem; color:var(--text-muted);">${h}</span>
+      </div>`).join('');
+  }
+
+  function renderConciliacion() {
+    document.getElementById('tabla-conciliacion').innerHTML = CONCILIACION.map(c => `
+      <tr style="border-top:1px solid var(--velo-08);">
+        <td style="padding:8px 10px; color:var(--text-heading); font-weight:600;">${c.producto}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${c.entrega}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${c.inventario}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${c.despacho}</td>
+        <td style="padding:8px 10px; color:var(--text-body);">${c.venta}</td>
+        <td style="padding:8px 10px;"><span class="badge ${ESTADO_CONC[c.estado].clase}" style="font-size:0.68rem;">${ESTADO_CONC[c.estado].texto}</span></td>
+      </tr>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderLeyenda();
+    renderBombas();
+    renderPronostico();
+    renderConciliacion();
+    G5.initSello('#sello-header');
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

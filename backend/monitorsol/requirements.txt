@@ -1,0 +1,31 @@
+# MonitorSol — dependencias directas.
+#
+# Generado desde el venv que vino con el código (pip freeze, 59 paquetes;
+# aquí quedan solo las directas, el resto son transitivas).
+#
+#   python3.12 -m venv venv
+#   venv/bin/pip install -r requirements.txt
+#
+# Requiere además el binario ffmpeg en el sistema (brew install ffmpeg).
+# Probado con Python 3.12.3.
+
+# ── Servidor ──
+fastapi==0.111.0
+uvicorn==0.29.0
+websockets==12.0
+python-multipart==0.0.9
+pydantic==2.13.4
+
+# ── Transcripción ──
+# La versión de Whisper viene fijada a un commit, no a una release.
+openai-whisper @ git+https://github.com/openai/whisper.git@04f449b8a437f1bbd3dba5c9f826aca972e7709a
+torch==2.12.0
+numba==0.65.1
+numpy==2.4.6
+
+# ── Captura de audio ──
+ffmpeg-python==0.2.0
+aiofiles==23.2.1
+
+# ── Persistencia ──
+aiosqlite==0.20.0

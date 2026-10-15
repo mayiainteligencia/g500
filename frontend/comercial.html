@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Panel comercial: ventas, margen, Escudería y siguiente mejor acción.">
+  <title>Comercial — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="comercial">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="shopping-cart" style="color:var(--accent-cyan);"></i> Panel Comercial</h1>
+          <p>Tienda, Escudería y promociones · <span id="sello-header">actualizado hace instantes</span></p>
+        </div>
+      </section>
+
+      <section class="kpi-grid" id="kpi-grid"></section>
+
+      <section style="display:grid; grid-template-columns: 1fr 1fr; gap:var(--space-md);">
+        <!-- Ventas por línea -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Ventas y margen por línea</h3>
+          <div id="lineas" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <!-- Monedas / promociones -->
+        <div class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+          <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Monedas Escudería y promociones</h3>
+          <div style="display:flex; gap:var(--space-md); margin-bottom:var(--space-md);">
+            <div><div class="kpi-card__sub">Emitidas</div><div style="font-size:1.3rem; font-weight:800; color:var(--text-heading); font-family:var(--font-heading);">3,420</div></div>
+            <div><div class="kpi-card__sub">Redimidas</div><div style="font-size:1.3rem; font-weight:800; color:var(--text-heading); font-family:var(--font-heading);">2,110</div></div>
+            <div><div class="kpi-card__sub">Costo</div><div style="font-size:1.3rem; font-weight:800; color:var(--sev-media); font-family:var(--font-heading);">$4,220</div></div>
+          </div>
+          <div id="promos" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+      </section>
+
+      <!-- Siguiente mejor acción -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:4px;">Siguiente mejor acción</h3>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:var(--space-md);">
+          Cada recomendación pasa por 5 filtros antes de mostrarse al despachador.
+        </p>
+        <div id="sma-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <!-- Mapa de estaciones con potencial (placeholder de mapa) -->
+      <section class="glass-strong" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Mapa de estaciones con potencial</h3>
+        <div id="mapa-potencial" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const KPIS_COM = [
+    { icon: 'receipt',    label: 'Ticket por visita',   value: '$284', sub: '+6% vs. semana pasada' },
+    { icon: 'repeat',     label: 'Frecuencia',          value: '2.4/mes', sub: 'Clientes recurrentes' },
+    { icon: 'users-round',label: 'Retención Escudería', value: '78%',  sub: 'A 90 días' },
+    { icon: 'trending-up',label: 'Conversión a tienda', value: '41%',  sub: 'De clientes de combustible' },
+  ];
+
+  const LINEAS = [
+    { linea: 'Combustible', venta: '$412,300', margen: '9%' },
+    { linea: 'Tienda de conveniencia', venta: '$68,400', margen: '34%' },
+    { linea: 'Aceites y lubricantes', venta: '$21,900', margen: '38%' },
+    { linea: 'Servicios (lavado, aire)', venta: '$9,600', margen: '52%' },
+  ];
+
+  const PROMOS = [
+    { texto: '2x1 en café — presupuesto $3,000', avance: 0.62 },
+    { texto: '10% en aceite Escudería — presupuesto $8,000', avance: 0.31 },
+  ];
+
+  const SMA = [
+    { titulo: 'Ofrecer Escudería a placa ABC-124-C', filtros: ['Elegible', 'Sin oferta reciente', 'Margen positivo', 'Inventario disponible', 'Turno adecuado'] },
+    { titulo: 'Sugerir cambio de aceite a cliente frecuente', filtros: ['Elegible', 'Kilometraje vencido', 'Margen positivo', 'Inventario disponible', 'Turno adecuado'] },
+    { titulo: 'Promocionar recarga eléctrica en horario valle', filtros: ['Elegible', 'Sin oferta reciente', 'Margen positivo', 'Capacidad disponible', 'Turno adecuado'] },
+  ];
+
+  const ESTACIONES_POTENCIAL = [
+    { nombre: 'Periférico Poniente', potencial: 'Alto', razon: 'Tráfico diario +18% vs. estaciones cercanas' },
+    { nombre: 'Zona Industrial', potencial: 'Medio', razon: 'Alta demanda de diésel, baja de tienda' },
+    { nombre: 'Salida a Carretera', potencial: 'Alto', razon: 'Sin competencia en 8 km a la redonda' },
+  ];
+
+  function renderKpis() {
+    document.getElementById('kpi-grid').innerHTML = KPIS_COM.map(k => `
+      <div class="kpi-card">
+        <div class="kpi-card__label"><span>${k.label}</span><i data-lucide="${k.icon}" class="icon-xs" style="color:var(--accent-cyan);"></i></div>
+        <div class="kpi-card__value">${k.value}</div>
+        <div class="kpi-card__sub">${k.sub}</div>
+      </div>`).join('');
+  }
+
+  function renderLineas() {
+    document.getElementById('lineas').innerHTML = LINEAS.map(l => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:var(--panel-fondo); border-radius:var(--radius-sm);">
+        <span style="font-size:0.82rem; color:var(--text-heading); font-weight:600;">${l.linea}</span>
+        <span style="font-size:0.82rem; color:var(--text-body);">${l.venta}</span>
+        <span style="font-size:0.78rem; color:var(--status-success); font-weight:700;">${l.margen} margen</span>
+      </div>`).join('');
+  }
+
+  function renderPromos() {
+    document.getElementById('promos').innerHTML = PROMOS.map(p => `
+      <div>
+        <div style="font-size:0.78rem; color:var(--text-body); margin-bottom:4px;">${p.texto}</div>
+        <div style="height:6px; background:var(--glass-bg); border-radius:4px; overflow:hidden;">
+          <div style="width:${p.avance*100}%; height:100%; background:var(--accent-cyan);"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderSma() {
+    document.getElementById('sma-grid').innerHTML = SMA.map(s => `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+        <strong style="font-size:0.85rem; color:var(--text-heading);">${s.titulo}</strong>
+        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+          ${s.filtros.map(f => `<span class="badge badge--success" style="font-size:0.62rem;">${f}</span>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  function renderMapaPotencial() {
+    const color = { Alto: 'var(--status-success)', Medio: 'var(--sev-media)', Bajo: 'var(--sev-critica)' };
+    document.getElementById('mapa-potencial').innerHTML = ESTACIONES_POTENCIAL.map(e => `
+      <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border-left:3px solid ${color[e.potencial]};">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.85rem; color:var(--text-heading);">${e.nombre}</strong>
+          <span style="font-size:0.68rem; font-weight:700; color:${color[e.potencial]};">${e.potencial}</span>
+        </div>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">${e.razon}</p>
+      </div>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderKpis();
+    renderLineas();
+    renderPromos();
+    renderSma();
+    renderMapaPotencial();
+    G5.initSello('#sello-header');
+    lucide.createIcons();
+  });
+  </script>
+</body>
+</html>

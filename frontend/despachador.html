@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estación del Futuro G500 — Consola del despachador, diseño tipo tablet con botones grandes.">
+  <title>Despachador — Estación del Futuro G500</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="css/colors.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/g500.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body data-page="despachador">
+
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal"></nav>
+
+  <main class="main" id="main-content">
+    <div class="mando-workspace animate-fade-in-up" style="max-width:900px;">
+
+      <section class="mando-header">
+        <div class="mando-header__title-box">
+          <h1><i data-lucide="tablet-smartphone" style="color:var(--accent-cyan);"></i> Consola del Despachador</h1>
+          <p>Bomba 6 · Turno matutino</p>
+        </div>
+        <div class="mando-header__pills">
+          <span id="badge-identidad" class="badge badge--neutral" style="padding:6px 12px; font-weight:600;">Identidad no confirmada</span>
+        </div>
+      </section>
+
+      <!-- Stepper de 6 pasos -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <div class="stepper" id="stepper"></div>
+      </section>
+
+      <!-- Contenido del paso -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg); min-height:320px;">
+        <div id="paso-contenido"></div>
+      </section>
+
+      <!-- Tarjetas condicionales -->
+      <section class="glass-strong tech-panel" style="padding:var(--space-lg); border-radius:var(--radius-lg);">
+        <h3 class="text-h3" style="margin-bottom:var(--space-sm);">Ofertas y cuidado del vehículo</h3>
+        <div id="tarjetas-condicionales" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-sm);"></div>
+      </section>
+
+      <div style="display:flex; justify-content:space-between;">
+        <button class="btn-glass" id="btn-atras" style="border:none; cursor:pointer;">Atrás</button>
+        <button class="btn-primary" id="btn-siguiente" style="border:none; cursor:pointer;">Siguiente</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  const PASOS = [
+    { label: 'Llegada', icon: 'car-front' },
+    { label: 'Bienvenida', icon: 'hand' },
+    { label: 'Servicio', icon: 'fuel' },
+    { label: 'Cuidado del vehículo', icon: 'sparkles' },
+    { label: 'Oferta', icon: 'gift' },
+    { label: 'Cierre', icon: 'check-check' },
+  ];
+
+  const CONTENIDO_PASO = [
+    `<p class="text-body">Vehículo detectado en Bomba 6. Confirma la placa para continuar.</p>
+     <p style="margin-top:8px; font-size:1.4rem; font-weight:800; color:var(--text-heading); font-family:var(--font-heading);">ABC-124-C</p>`,
+    `<p class="text-body">Saluda al cliente y pregunta el producto y monto o litros deseados.</p>
+     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;">
+       <button class="btn-tablet"><i data-lucide="fuel"></i>Regular</button>
+       <button class="btn-tablet"><i data-lucide="fuel"></i>Premium</button>
+       <button class="btn-tablet"><i data-lucide="fuel"></i>Diésel</button>
+     </div>`,
+    `<p class="text-body">Despachando Regular... <span style="color:var(--accent-cyan); font-weight:700;">142 L</span> a <span style="color:var(--accent-cyan); font-weight:700;">$3,190</span></p>
+     <div style="margin-top:10px; height:10px; background:var(--glass-bg); border-radius:6px; overflow:hidden;">
+       <div style="width:68%; height:100%; background:var(--accent-cyan);"></div>
+     </div>`,
+    `<p class="text-body">¿El cliente acepta revisión de cuidado del vehículo?</p>
+     <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:14px;">
+       <button class="btn-tablet"><i data-lucide="gauge"></i>Sí, revisar</button>
+       <button class="btn-tablet"><i data-lucide="x"></i>No, gracias</button>
+     </div>`,
+    `<p class="text-body">Oferta sugerida para este cliente según su historial.</p>`,
+    `<p class="text-body">Cierre de venta y beneficio para la siguiente visita.</p>
+     <div style="margin-top:10px; padding:12px; background:var(--proc-recomendacion-bg); border-radius:var(--radius-md); color:var(--proc-recomendacion); font-weight:700;">
+       10% de descuento en su próxima carga de aceite
+     </div>`,
+  ];
+
+  const TARJETAS_TODAS = [
+    { paso: 1, titulo: 'Escudería', icon: 'shield-check', texto: 'Cliente frecuente — nivel Plata. 240 pts acumulados.' },
+    { paso: 3, titulo: 'Aceite', icon: 'droplet', texto: 'Último cambio hace 6,200 km. Sugerir revisión.' },
+    { paso: 3, titulo: 'Presión de llantas', icon: 'gauge', texto: 'Sin registro en 30 días. Ofrecer revisión gratuita.' },
+    { paso: 3, titulo: 'Verificación', icon: 'file-check', texto: 'Vence en 12 días. Recordar al cliente.' },
+    { paso: 4, titulo: 'Tienda', icon: 'shopping-bag', texto: 'Promoción 2x1 en café hasta las 10:00.' },
+    { paso: 4, titulo: 'Servicios', icon: 'wrench', texto: 'Lavado de motor disponible, 15 min de espera.' },
+    { paso: 5, titulo: 'Beneficio próxima visita', icon: 'gift', texto: '10% en aceite si vuelve antes del 30.' },
+  ];
+
+  let pasoActual = 0;
+
+  function renderStepper() {
+    document.getElementById('stepper').innerHTML = PASOS.map((p, i) => `
+      ${i > 0 ? '<div class="stepper__linea"></div>' : ''}
+      <button type="button" class="stepper__paso ${i === pasoActual ? 'stepper__paso--activo' : i < pasoActual ? 'stepper__paso--hecho' : ''}" data-paso="${i}">
+        <span class="stepper__circulo">${i < pasoActual ? '<i data-lucide=\"check\" style=\"width:14px;height:14px;\"></i>' : i + 1}</span>
+        <span class="stepper__label">${p.label}</span>
+      </button>`).join('');
+    document.querySelectorAll('.stepper__paso').forEach(b => b.addEventListener('click', () => ir(Number(b.dataset.paso))));
+  }
+
+  function renderTarjetas() {
+    const relevantes = TARJETAS_TODAS.filter(t => t.paso === pasoActual);
+    document.getElementById('tarjetas-condicionales').innerHTML = relevantes.length
+      ? relevantes.map(t => `
+        <div style="padding:12px; background:var(--panel-fondo); border-radius:var(--radius-md); border:1px solid var(--glass-border);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <i data-lucide="${t.icon}" style="color:var(--accent-cyan); width:16px; height:16px;"></i>
+            <strong style="font-size:0.85rem; color:var(--text-heading);">${t.titulo}</strong>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted);">${t.texto}</p>
+        </div>`).join('')
+      : `<p style="font-size:0.8rem; color:var(--text-muted);">Sin tarjetas para este paso.</p>`;
+  }
+
+  function ir(i) {
+    pasoActual = Math.max(0, Math.min(PASOS.length - 1, i));
+    document.getElementById('paso-contenido').innerHTML = CONTENIDO_PASO[pasoActual];
+    document.getElementById('badge-identidad').textContent = pasoActual >= 1 ? 'Identidad confirmada — datos sensibles ocultos' : 'Identidad no confirmada';
+    document.getElementById('badge-identidad').className = 'badge ' + (pasoActual >= 1 ? 'badge--success' : 'badge--neutral');
+    renderStepper();
+    renderTarjetas();
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.getElementById('btn-atras').addEventListener('click', () => ir(pasoActual - 1));
+  document.getElementById('btn-siguiente').addEventListener('click', () => ir(pasoActual + 1));
+
+  document.addEventListener('DOMContentLoaded', () => ir(0));
+  </script>
+</body>
+</html>

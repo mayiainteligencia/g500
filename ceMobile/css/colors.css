@@ -1,0 +1,124 @@
+/* ============================================
+   CE MOBILE — TOKENS DE COLOR
+   Modo oscuro (por defecto) + modo claro
+   ============================================ */
+
+/* ── MODO OSCURO (DEFAULT) ── */
+:root {
+  --bg-start:           #080c14;
+  --bg-mid:             #0a0f1d;
+  --bg-end:             #080c14;
+  --bg-gradient:        linear-gradient(180deg, #080c14 0%, #0a0f1d 50%, #080c14 100%);
+
+  --glass-bg:           rgba(148, 178, 230, 0.06);
+  --glass-bg-hover:     rgba(148, 178, 230, 0.10);
+  --glass-bg-active:    rgba(148, 178, 230, 0.14);
+  --glass-border:       rgba(190, 214, 255, 0.12);
+  --glass-border-hover: rgba(190, 214, 255, 0.22);
+  --glass-shadow:       0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.60);
+
+  --text-heading:       #eef2f9;
+  --text-body:          #b6c2d4;
+  --text-muted:         #74839a;
+  --text-hero:          #ffffff;
+  --text-on-accent:     #0a0e17;
+
+  --accent-coral:       #ff5c72;
+  --accent-blue:        #5b9dff;
+  --accent-blue-light:  rgba(91, 157, 255, 0.16);
+  --accent-navy:        #4361ee;
+  --accent-purple:      #a78bfa;
+  --accent-warm:        #f5a524;
+  --accent-cyan:        #22d3ee;
+  --accent-green:       #34d399;
+
+  --superficie:         rgba(22, 32, 53, 0.86);
+  --superficie-hover:   rgba(33, 46, 74, 0.96);
+  --superficie-honda:   rgba(11, 17, 32, 0.92);
+
+  --card-bg:            rgba(148, 178, 230, 0.055);
+  --card-border:        rgba(190, 214, 255, 0.11);
+  --card-shadow:        0 4px 24px rgba(0, 0, 0, 0.40);
+  --card-bg-raised:     rgba(148, 178, 230, 0.09);
+
+  --status-success:     #34d399;
+  --status-pending:     #f5a524;
+  --status-rejected:    #ff5c72;
+
+  --sev-critica:        #ff4757;
+  --sev-critica-bg:     rgba(255, 71, 87, 0.14);
+  --sev-alta:           #ff8c42;
+  --sev-media:          #f5c518;
+  --sev-media-bg:       rgba(245, 197, 24, 0.14);
+
+  --proc-dato:            #22d3ee;
+  --proc-dato-bg:         rgba(34, 211, 238, 0.13);
+  --proc-calculo:         #a78bfa;
+  --proc-estimacion:      #f5a524;
+  --proc-inferencia:      #f472b6;
+  --proc-recomendacion:   #34d399;
+
+  --panel-fondo:        rgba(15, 23, 42, 0.50);
+  --panel-fondo-alto:   rgba(15, 23, 42, 0.85);
+  --cyan-tinte-xs:      rgba(34, 211, 238, 0.06);
+  --cyan-tinte-sm:      rgba(34, 211, 238, 0.10);
+  --cyan-tinte:         rgba(34, 211, 238, 0.15);
+  --velo-05:            rgba(255, 255, 255, 0.05);
+  --velo-08:            rgba(255, 255, 255, 0.08);
+  --velo-10:            rgba(255, 255, 255, 0.10);
+
+  /* Mobile-específicos (modo oscuro) */
+  --mob-bg:             #080c14;
+  --mob-bg-2:           #0d1526;
+  --mob-topbar-bg:      rgba(8, 12, 20, 0.92);
+  --mob-tabbar-bg:      rgba(8, 12, 20, 0.97);
+  --mob-card-bg:        rgba(148, 178, 230, 0.05);
+  --mob-card-border:    rgba(190, 214, 255, 0.09);
+  --mob-surface:        rgba(16, 24, 40, 0.80);
+  --mob-surface-2:      rgba(22, 32, 52, 0.60);
+  --mob-border:         rgba(190, 214, 255, 0.07);
+  --mob-border-mid:     rgba(190, 214, 255, 0.12);
+  --mob-text-1:         #eef2f9;
+  --mob-text-2:         #b6c2d4;
+  --mob-text-3:         #74839a;
+  --mob-icon-bg:        rgba(22, 32, 52, 0.9);
+  --mob-story-inner:    #0d1526;
+  --mob-chat-agent-bg:  rgba(16, 24, 40, 0.8);
+  --mob-notif-bg:       rgba(10, 15, 29, 0.97);
+  --mob-overlay-bg:     rgba(0, 0, 0, 0.9);
+  --mob-input-bg:       rgba(148, 178, 230, 0.08);
+  --mob-qr-bg:          rgba(16, 24, 40, 0.7);
+  --mob-post-visual:    rgba(12, 18, 32, 0.6);
+  --mob-shadow:         rgba(0, 0, 0, 0.9);
+}
+
+/* ── MODO CLARO ── */
+[data-theme="light"] {
+  --mob-bg:             #f0f4f8;
+  --mob-bg-2:           #ffffff;
+  --mob-topbar-bg:      rgba(248, 250, 252, 0.95);
+  --mob-tabbar-bg:      rgba(248, 250, 252, 0.97);
+  --mob-card-bg:        rgba(255, 255, 255, 0.85);
+  --mob-card-border:    rgba(30, 58, 138, 0.08);
+  --mob-surface:        rgba(255, 255, 255, 0.90);
+  --mob-surface-2:      rgba(241, 245, 249, 0.80);
+  --mob-border:         rgba(30, 58, 138, 0.06);
+  --mob-border-mid:     rgba(30, 58, 138, 0.12);
+  --mob-text-1:         #0f172a;
+  --mob-text-2:         #334155;
+  --mob-text-3:         #94a3b8;
+  --mob-icon-bg:        rgba(241, 245, 249, 0.95);
+  --mob-story-inner:    #e2e8f0;
+  --mob-chat-agent-bg:  rgba(241, 245, 249, 0.9);
+  --mob-notif-bg:       rgba(248, 250, 252, 0.98);
+  --mob-overlay-bg:     rgba(15, 23, 42, 0.85);
+  --mob-input-bg:       rgba(241, 245, 249, 0.9);
+  --mob-qr-bg:          rgba(241, 245, 249, 0.8);
+  --mob-post-visual:    rgba(241, 245, 249, 0.7);
+  --mob-shadow:         rgba(15, 23, 42, 0.08);
+
+  /* Texto sobre modo claro */
+  --mob-text-on-card:   #0f172a;
+  --accent-cyan:        #0891b2;  /* cian más oscuro para contraste en blanco */
+}
